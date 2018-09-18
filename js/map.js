@@ -10,42 +10,43 @@ var arrayPins = [];
 var widthMapPins = document.querySelector('.map__pins').offsetWidth; // Ширина окна
 
 /**
- * Функция выбора случаного числа между максимальным и минимальным
+ * Выбор случайного числа между максимальным и минимальным
  * @param {number} min минимальное число
  * @param {number} max максимальное число
- * @returns {number} случайное число
+ * @return {number} случайное число
  */
-var randomInteger = function (min, max) {
+function randomInteger(min, max) {
   var rand = min - 0.5 + Math.random() * (max - min + 1)
   rand = Math.round(rand);
   return rand;
 }
 
 /**
- * Функция для перемешенной сортировки массива
- * @returns {number} случайное число
+ * Перемешенная сортировка массива
+ * @return {number} случайное число
  */
-var compareRandom = function () {
+function compareRandom() {
   return Math.random() - 0.5;
 }
 
 /**
- * Функция создания объекта
- * @param {text} id айди template
- * @param {text} tag тэг внутри template, который хотим клонировать
- * @returns {Element}
+ * Поиск элемента в DOM
+ * @param {string} id айди template
+ * @param {string} tag тэг внутри template, который хотим клонировать
+ * @return {Element} новый элемент
  */
-var createObj = function (id, tag) {
+function findElement(id, tag) {
   return document.querySelector(id).content.querySelector(tag);
 }
 
 /**
- * Функция заполнения массива данных
+ * Заполнение массива данных
+ * @param {number} widthMap ширина окна с пинами
  */
-var fullArray = function () {
+function createArrayPins(widthMap) {
   for (var i = 0; i < 8; i++) {
     var number = i + 1;
-    var locatoinX = randomInteger(0, widthMapPins);
+    var locatoinX = randomInteger(0, widthMap);
     var locationY = randomInteger(130, 630);
     var arrayFeatures = [];
     for (var j = 0; j <= randomInteger(0, 5); j++) {
@@ -78,11 +79,11 @@ var fullArray = function () {
 };
 
 /**
- * Функция создание и заполнения пина
+ * Создание и заполнение пина
+ * @return {Element} новый элемент
  */
-var createPin = function () {
-  var templatePin = createObj('#pin', 'button');
-  var mapPins = document.querySelector('.map__pins');
+function createPins() {
+  var templatePin = findElement('#pin', 'button');
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < 8; i++) {
@@ -92,24 +93,30 @@ var createPin = function () {
     newElement.children[0].alt = arrayPins[i].offer.title;
     fragment.appendChild(newElement);
   }
-
-  mapPins.appendChild(fragment);
+  return fragment;
 };
 
 /**
- * Функция создание и заполнения карточки
+ * Добавление нового элемента в родительский элемент
+ * @param {string} parentClass родительский класс
+ * @param {Element} newChild новый дочерний элемент
  */
-var createСard = function () {
-  var templateCard = createObj('#card', 'article');
-  var map = document.querySelector('.map');
-  var mapFilters = document.querySelector('.map__filters-container');
-  var newElementCard = templateCard.cloneNode(true);
+function addChildtoDom(parentClass, newChild) {
+  document.querySelector(parentClass).appendChild(newChild);
+}
 
-  var typeOfferEng = arrayPins[0].offer.type;
+/**
+ * Создание и заполнение карточкии
+ * @return {Element} новый элемент
+ */
+function createСard(arrayElement) {
+  var templateCard = findElement('#card', 'article');
+  var newElementCard = templateCard.cloneNode(true);
+  var typeOfferEng = arrayElement.offer.type;
   var typeOfferRus = '';
 
   var outFeatures = [];
-  for (var k = arrayPins[0].offer.features.length; k < PIN_FEATURES.length; k++) {
+  for (var k = arrayElement.offer.features.length; k < PIN_FEATURES.length; k++) {
     outFeatures.push(PIN_FEATURES[k]);
   }
   for (var m = 0; m < outFeatures.length; m++) {
@@ -130,15 +137,15 @@ var createСard = function () {
       typeOfferRus = 'Дворец';
   }
 
-  newElementCard.querySelector('.popup__title').textContent = arrayPins[0].offer.title;
-  newElementCard.querySelector('.popup__text--address').textContent = arrayPins[0].offer.addres;
-  newElementCard.querySelector('.popup__text--price').textContent = arrayPins[0].offer.price + '₽/ночь';
+  newElementCard.querySelector('.popup__title').textContent = arrayElement.offer.title;
+  newElementCard.querySelector('.popup__text--address').textContent = arrayElement.offer.addres;
+  newElementCard.querySelector('.popup__text--price').textContent = arrayElement.offer.price + '₽/ночь';
   newElementCard.querySelector('.popup__type').textContent = typeOfferRus;
-  newElementCard.querySelector('.popup__text--capacity').textContent = arrayPins[0].offer.rooms + ' комнаты для ' + arrayPins[0].offer.guests + ' гостей';
-  newElementCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + arrayPins[0].offer.checkin + ' выезд до ' + arrayPins[0].offer.checkout;
+  newElementCard.querySelector('.popup__text--capacity').textContent = arrayElement.offer.rooms + ' комнаты для ' + arrayElement.offer.guests + ' гостей';
+  newElementCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + arrayElement.offer.checkin + ' выезд до ' + arrayElement.offer.checkout;
   newElementCard.querySelector('.popup__features');
-  newElementCard.querySelector('.popup__description').textContent = arrayPins[0].offer.description;
-  newElementCard.querySelector('.popup__avatar').src = arrayPins[0].author.avatar;
+  newElementCard.querySelector('.popup__description').textContent = arrayElement.offer.description;
+  newElementCard.querySelector('.popup__avatar').src = arrayElement.author.avatar;
 
   var fragmentPhoto = document.createDocumentFragment();
   for (var i = 0; i < PIN_PHOTOS.length - 1; i++) {
@@ -152,11 +159,23 @@ var createСard = function () {
     arrayPhotos[j].src = PIN_PHOTOS[j];
   }
 
-  map.insertBefore(newElementCard, mapFilters);
+  return newElementCard;
 }
 
-fullArray();
-createPin();
-createСard();
+/**
+ * Добавление нового элемента перед другим элементом
+ * @param {string} parentClass родительский класс
+ * @param {string} elementBeforeClass класс следующего элемента
+ * @param {Element} newElement новый  элемент
+ */
+function addElementToDomBefore(parentClass, elementBeforeClass, newElement) {
+  document.querySelector(parentClass).insertBefore(newElement, document.querySelector(elementBeforeClass));
+}
+
+createArrayPins(widthMapPins);
+var newPins = createPins();
+addChildtoDom('.map__pins', newPins);
+var newCard = createСard(arrayPins[0]);
+addElementToDomBefore('.map', '.map__filters-container', newCard);
 
 
