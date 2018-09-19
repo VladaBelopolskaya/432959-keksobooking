@@ -6,7 +6,7 @@ var PIN_TIME = ['12:00', '13:00', '14:00'];
 var PIN_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PIN_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
-var arrayPins = [];
+
 var widthMapPins = document.querySelector('.map__pins').offsetWidth; // Ширина окна
 
 /**
@@ -42,8 +42,10 @@ function findElement(id, tag) {
 /**
  * Заполнение массива данных
  * @param {number} widthMap ширина окна с пинами
+ * @return {array} pins заполненный массив пинов с данными
  */
 function createArrayPins(widthMap) {
+  var pins = [];
   for (var i = 0; i < 8; i++) {
     var number = i + 1;
     var locatoinX = randomInteger(0, widthMap);
@@ -52,8 +54,7 @@ function createArrayPins(widthMap) {
     for (var j = 0; j <= randomInteger(0, 5); j++) {
       arrayFeatures.push(PIN_FEATURES[j]);
     }
-
-    arrayPins[i] = {
+    var data = {
       author: {
         avatar: 'img/avatars/user0' + number + '.png'
       },
@@ -75,22 +76,26 @@ function createArrayPins(widthMap) {
         y: locationY
       }
     };
+
+    pins.push(data);
   }
+  return pins;
 };
 
 /**
  * Создание и заполнение пина
+ * @param {array} pins массив данных
  * @return {Element} новый элемент
  */
-function createPins() {
+function createPinElemetns(pins) {
   var templatePin = findElement('#pin', 'button');
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < 8; i++) {
     var newElement = templatePin.cloneNode(true);
-    newElement.style.cssText = 'left: ' + arrayPins[i].location.x + 'px; top: ' + arrayPins[i].location.y + 'px;';
-    newElement.children[0].src = arrayPins[i].author.avatar;
-    newElement.children[0].alt = arrayPins[i].offer.title;
+    newElement.style.cssText = 'left: ' + pins[i].location.x + 'px; top: ' + pins[i].location.y + 'px;';
+    newElement.children[0].src = pins[i].author.avatar;
+    newElement.children[0].alt = pins[i].offer.title;
     fragment.appendChild(newElement);
   }
   return fragment;
@@ -172,10 +177,10 @@ function addElementToDomBefore(parentClass, elementBeforeClass, newElement) {
   document.querySelector(parentClass).insertBefore(newElement, document.querySelector(elementBeforeClass));
 }
 
-createArrayPins(widthMapPins);
-var newPins = createPins();
+var pins = createArrayPins(widthMapPins);
+var newPins = createPinElemetns(pins);
 addChildtoDom('.map__pins', newPins);
-var newCard = createСard(arrayPins[0]);
+var newCard = createСard(pins[0]);
 addElementToDomBefore('.map', '.map__filters-container', newCard);
 
 
