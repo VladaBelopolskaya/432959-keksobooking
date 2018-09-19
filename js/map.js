@@ -5,9 +5,13 @@ var PIN_TYPE = ['palace', 'flat', 'house', 'bungalo'];
 var PIN_TIME = ['12:00', '13:00', '14:00'];
 var PIN_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PIN_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var MIN_VERTICAL_COORDINATE = 130;
+var MAX_VERTICAL_COORDINATE = 630;
+var MIN_PRICE = 1000;
+var MAX_PRICE = 1000000;
+var MAX_ROOMS = 5;
+var MAX_GUESTS = 100;
 
-
-var widthMapPins = document.querySelector('.map__pins').offsetWidth; // Ширина окна
 
 /**
  * Выбор случайного числа между максимальным и минимальным
@@ -40,18 +44,19 @@ function findElement(id, tag) {
 }
 
 /**
- * Заполнение массива данных
+ * Заполнение массива данных, чистая функция
  * @param {number} widthMap ширина окна с пинами
- * @return {array} pins заполненный массив пинов с данными
+ * @return {array} заполненный массив пинов с данными
  */
 function createArrayPins(widthMap) {
   var pins = [];
   for (var i = 0; i < 8; i++) {
     var number = i + 1;
     var locatoinX = randomInteger(0, widthMap);
-    var locationY = randomInteger(130, 630);
+    var locationY = randomInteger(MIN_VERTICAL_COORDINATE, MAX_VERTICAL_COORDINATE);
     var arrayFeatures = [];
-    for (var j = 0; j <= randomInteger(0, 5); j++) {
+    var arrayFeatureLenght = randomInteger(0, PIN_FEATURES.length - 1);
+    for (var j = 0; j <= arrayFeatureLenght; j++) {
       arrayFeatures.push(PIN_FEATURES[j]);
     }
     var data = {
@@ -61,12 +66,12 @@ function createArrayPins(widthMap) {
       offer: {
         title: PIN_TITLE[i],
         address: locatoinX + ', ' + locationY,
-        price: randomInteger(1000, 1000000),
-        type: PIN_TYPE[randomInteger(0, 3)],
-        rooms: randomInteger(1, 5),
-        guests: randomInteger(1, 100), // Какой диапазон взять?
-        checkin: PIN_TIME[randomInteger(0, 2)],
-        checkout: PIN_TIME[randomInteger(0, 2)],
+        price: randomInteger(MIN_PRICE, MAX_PRICE),
+        type: PIN_TYPE[randomInteger(0, PIN_TYPE.length - 1)],
+        rooms: randomInteger(1, MAX_ROOMS),
+        guests: randomInteger(1, MAX_GUESTS),
+        checkin: PIN_TIME[randomInteger(0, PIN_TIME.length - 1)],
+        checkout: PIN_TIME[randomInteger(0, PIN_TIME.length - 1)],
         features: arrayFeatures,
         description: '',
         photos: PIN_PHOTOS.sort(compareRandom)
@@ -84,13 +89,12 @@ function createArrayPins(widthMap) {
 
 /**
  * Создание и заполнение пина
- * @param {array} pins массив данных
+ * @param {array} pins массив данных, в которых есть location, author, offer
+ * @param {Element} templatePin элемент является кнопкой с тегом img внутри
  * @return {Element} новый элемент
  */
-function createPinElemetns(pins) {
-  var templatePin = findElement('#pin', 'button');
+function createPinElements(pins, templatePin) {
   var fragment = document.createDocumentFragment();
-
   for (var i = 0; i < 8; i++) {
     var newElement = templatePin.cloneNode(true);
     newElement.style.cssText = 'left: ' + pins[i].location.x + 'px; top: ' + pins[i].location.y + 'px;';
@@ -112,6 +116,7 @@ function addChildtoDom(parentClass, newChild) {
 
 /**
  * Создание и заполнение карточкии
+ * @param {Element} arrayElement элемант массива, на основе которого надо сделать карточку
  * @return {Element} новый элемент
  */
 function createСard(arrayElement) {
@@ -177,9 +182,11 @@ function addElementToDomBefore(parentClass, elementBeforeClass, newElement) {
   document.querySelector(parentClass).insertBefore(newElement, document.querySelector(elementBeforeClass));
 }
 
+var widthMapPins = document.querySelector('.map__pins').offsetWidth; // Ширина окна
 var pins = createArrayPins(widthMapPins);
-var newPins = createPinElemetns(pins);
-addChildtoDom('.map__pins', newPins);
+var templatePin = findElement('#pin', 'button');
+var pinElements = createPinElements(pins, templatePin);
+addChildtoDom('.map__pins', pinElements);
 var newCard = createСard(pins[0]);
 addElementToDomBefore('.map', '.map__filters-container', newCard);
 
