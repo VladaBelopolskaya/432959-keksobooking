@@ -130,6 +130,8 @@ function createСard(arrayElement) {
   var newElementCard = templateCard.cloneNode(true);
   var typeOfferEng = arrayElement.offer.type;
   var typeOfferRus = '';
+  var numberOfRooms = arrayElement.offer.rooms;
+  var declination = '';
 
   var outFeatures = [];
   for (var k = arrayElement.offer.features.length; k < PIN_FEATURES.length; k++) {
@@ -152,12 +154,29 @@ function createСard(arrayElement) {
     case 'palace':
       typeOfferRus = 'Дворец';
   }
+  switch (numberOfRooms % 10) {
+    case 1:
+      declination = 'комната';
+      break;
+    case 2:
+    case 3:
+    case 4:
+      declination = 'комнаты';
+      break;
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 0:
+      declination = 'комнат';
+  }
 
   newElementCard.querySelector('.popup__title').textContent = arrayElement.offer.title;
   newElementCard.querySelector('.popup__text--address').textContent = arrayElement.offer.addres;
   newElementCard.querySelector('.popup__text--price').textContent = arrayElement.offer.price + '₽/ночь';
   newElementCard.querySelector('.popup__type').textContent = typeOfferRus;
-  newElementCard.querySelector('.popup__text--capacity').textContent = arrayElement.offer.rooms + ' комнаты для ' + arrayElement.offer.guests + ' гостей';
+  newElementCard.querySelector('.popup__text--capacity').textContent = arrayElement.offer.rooms + ' ' + declination + ' для ' + arrayElement.offer.guests + ' гостей';
   newElementCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + arrayElement.offer.checkin + ' выезд до ' + arrayElement.offer.checkout;
   newElementCard.querySelector('.popup__description').textContent = arrayElement.offer.description;
   newElementCard.querySelector('.popup__avatar').src = arrayElement.author.avatar;
