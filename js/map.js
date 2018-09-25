@@ -163,12 +163,7 @@ function createСard(arrayElement) {
     case 4:
       declination = 'комнаты';
       break;
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-    case 9:
-    case 0:
+    default:
       declination = 'комнат';
   }
 
@@ -239,7 +234,7 @@ function noticeDisabled(argument) {
 /**
  * Активирует карту, форму и фильтры, добавляет пины в DOM, навешивает обрабочики на пины
  */
-function activeState() {
+function activeMap() {
   var map = findElement('.map');
   var adForm = findElement('.ad-form');
   var mapFilters = findElement('.map__filters');
@@ -262,8 +257,8 @@ function activeState() {
 /**
  * Отображает карточку с подробной информацией
  */
-function showCard() {
-  var element = event.currentTarget;
+function showCard(evt) {
+  var element = evt.currentTarget;
   var elementId = element.id;
   var idIndex = +elementId.substr(3);
   var newCard = createСard(pins[idIndex]);
@@ -291,7 +286,7 @@ function closePopup() {
 }
 
 /**
- * Изменяет адрес , в зависмиости от расположения главного пина
+ * Изменяет адрес , в зависимости от расположения главного пина
  */
 function changeAddress() {
   var address = findElement('#address');
@@ -309,6 +304,6 @@ noticeDisabled(true);
 var mapPinMain = findElement('.map__pin--main');
 var address = findElement('#address');
 address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
-mapPinMain.addEventListener('mouseup', activeState);
+mapPinMain.addEventListener('mouseup', activeMap);
 mapPinMain.addEventListener('mouseup', changeAddress);
 
