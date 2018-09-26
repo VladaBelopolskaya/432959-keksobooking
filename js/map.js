@@ -234,7 +234,7 @@ function noticeDisabled(argument) {
 /**
  * Активирует карту, форму и фильтры, добавляет пины в DOM, навешивает обрабочики на пины
  */
-function activeMap() {
+function onPinMainMouseup() {
   var map = findElement('.map');
   var adForm = findElement('.ad-form');
   var mapFilters = findElement('.map__filters');
@@ -250,14 +250,16 @@ function activeMap() {
 
   var mapPins = findElementAll('.map__pin');
   for (var i = 0; i < mapPins.length; i++) {
-    mapPins[i].addEventListener('mouseup', showCard);
+    mapPins[i].addEventListener('mouseup', onPinMouseup);
   }
+
+  console.dir(pinElements);
 }
 
 /**
  * Отображает карточку с подробной информацией
  */
-function showCard(evt) {
+function onPinMouseup(evt) {
   var element = evt.currentTarget;
   var elementId = element.id;
   var idIndex = +elementId.substr(3);
@@ -273,26 +275,154 @@ function showCard(evt) {
   }
 
   var buttonClose = findElement('.popup__close');
-  buttonClose.addEventListener('mouseup', closePopup);
+  buttonClose.addEventListener('mouseup', onButtonCloseMouseup);
 }
 
 /**
  * Закрывает попап
  */
-function closePopup() {
+function onButtonCloseMouseup() {
   var card = findElement('.map__card')
   var parent = findElement('.map')
   parent.removeChild(card);
 }
 
 /**
- * Изменяет адрес , в зависимости от расположения главного пина
+ * Изменяет адрес в зависимости от расположения главного пина
  */
-function changeAddress() {
+function onPinMainMousedown() {
   var address = findElement('#address');
   var locationX = HALF_MAIN_PIN_WEIGHT + mapPinMain.offsetLeft
   var locationY = MAIN_PIN_HEIGHT + mapPinMain.offsetTop;
   address.value = locationX + ', ' + locationY;
+}
+
+/**
+ * Изменяет минимальное значение и placeholder в зависимости от типа жилья
+ */
+function onSelectTypeChange() {
+  var priceOfHousing = findElement('#price');
+  switch (typeOfHousing.value) {
+    case 'flat':
+      priceOfHousing.min = 1000;
+      priceOfHousing.placeholder = 1000;
+      break;
+    case 'bungalo':
+      priceOfHousing.min = 0;
+      priceOfHousing.placeholder = 0;
+      break;
+    case 'house':
+      priceOfHousing.min = 5000;
+      priceOfHousing.placeholder = 5000;
+      break;
+    case 'palace':
+      priceOfHousing.min = 10000;
+      priceOfHousing.placeholder = 10000;
+  }
+}
+
+/**
+ * Изменение времени выезда в завистимости от времени заезда
+ */
+function onSelectTimeInChange() {
+  switch (timeIn.value) {
+    case '12:00':
+      timeOut.value = '12:00';
+      break;
+    case '13:00':
+      timeOut.value = '13:00';
+      break;
+    case '14:00':
+      timeOut.value = '14:00';
+  }
+}
+
+/**
+ * Изменение времени заезда в завсимости от вермени выезда
+ */
+function onSelectTimeOutChange() {
+  switch (timeOut.value) {
+    case '12:00':
+      timeIn.value = '12:00';
+      break;
+    case '13:00':
+      timeIn.value = '13:00';
+      break;
+    case '14:00':
+      timeIn.value = '14:00';
+  }
+}
+
+/**
+ * Изменнение количества гостей в зависимости от типа жилья
+ */
+function onRoomNumberChange() {
+  var capacity = findElement('#capacity');
+
+  switch (roomNumber.value) {
+    case '1':
+      capacity.children[0].disabled = true;
+      capacity.children[1].disabled = true;
+      capacity.children[2].disabled = false;
+      capacity.children[3].disabled = true;
+      capacity.value = '1';
+      break;
+    case '2':
+      capacity.children[0].disabled = true;
+      capacity.children[1].disabled = false;
+      capacity.children[2].disabled = false;
+      capacity.children[3].disabled = true;
+      if (capacity.value === '0' || capacity.value === '3') {
+        capacity.value = '2';
+      }
+      break;
+    case '3':
+      capacity.children[0].disabled = false;
+      capacity.children[1].disabled = false;
+      capacity.children[2].disabled = false;
+      capacity.children[3].disabled = true;
+      if (capacity.value === '0') {
+        capacity.value = '3';
+      }
+      break;
+    case '100':
+      capacity.children[0].disabled = true;
+      capacity.children[1].disabled = true;
+      capacity.children[2].disabled = true;
+      capacity.children[3].disabled = false;
+      capacity.value = '0';
+  }
+}
+
+/**
+ * Удаление элемента из родительского элемента
+ * @param {Element} elem родительский класс
+ */
+function removeChildFromDom(elem) {
+  elem.remove();
+}
+
+function onResetButtonMouseup() {
+  var map = findElement('.map');
+  var adForm = findElement('.ad-form');
+  var mapFilters = findElement('.map__filters');
+  var mapPinMain = findElement('.map__pin--main');
+  var address = findElement('#address');
+  var mapCard = findElement('.map__card');
+
+  map.classList.add('map--faded');
+  adForm.classList.add('ad-form--disabled');
+  adForm.reset();
+  noticeDisabled(true);
+  mapFilters.classList.add('ad-form--disabled');
+  address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
+
+  removeChildFromDom(mapCard);
+
+  var mapPins = findElementAll('.map__pin');
+  for (var i = 1; i < mapPins.length; i++) {
+    removeChildFromDom(mapPins[i]);
+  }
 }
 
 var widthMapPins = document.querySelector('.map__pins').offsetWidth; // Ширина окна
@@ -304,6 +434,21 @@ noticeDisabled(true);
 var mapPinMain = findElement('.map__pin--main');
 var address = findElement('#address');
 address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
-mapPinMain.addEventListener('mouseup', activeMap);
-mapPinMain.addEventListener('mouseup', changeAddress);
+mapPinMain.addEventListener('mouseup', onPinMainMouseup);
+mapPinMain.addEventListener('mousedown', onPinMainMousedown);
 
+// не работает переключение пинов в фаерфоксе
+
+var typeOfHousing = findElement('#type');
+typeOfHousing.addEventListener('change', onSelectTypeChange);
+
+var timeIn = findElement('#timein');
+var timeOut = findElement('#timeout');
+timeIn.addEventListener('change', onSelectTimeInChange);
+timeOut.addEventListener('change', onSelectTimeOutChange);
+
+var roomNumber = findElement('#room_number');
+roomNumber.addEventListener('change', onRoomNumberChange);
+
+var resetButton = findElement('.ad-form__reset');
+resetButton.addEventListener('mouseup', onResetButtonMouseup)
