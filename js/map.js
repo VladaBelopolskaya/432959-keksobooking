@@ -252,11 +252,11 @@ function onPinMainMouseup() {
   addElementToDomBefore('.map', '.map__filters-container', newCard);
 
   var mapPins = findElementAll('.map__pin');
-  for (var i = 0; i < mapPins.length; i++) {
+  for (var i = 1; i < mapPins.length; i++) {
     mapPins[i].addEventListener('mouseup', onPinMouseup);
   }
 
-  console.dir(pinElements);
+  mapPinMain.removeEventListener('mouseup', onPinMainMouseup);
 }
 
 /**
@@ -413,6 +413,7 @@ function onResetButtonMouseup() {
   var adForm = findElement('.ad-form');
   var mapFilters = findElement('.map__filters');
   var mapPinMain = findElement('.map__pin--main');
+  mapPinMain.addEventListener('mouseup', onPinMainMouseup);
   var address = findElement('#address');
   var mapCard = findElement('.map__card');
 
@@ -429,6 +430,7 @@ function onResetButtonMouseup() {
   for (var i = 1; i < mapPins.length; i++) {
     removeChildFromDom(mapPins[i]);
   }
+
 }
 
 var widthMapPins = document.querySelector('.map__pins').offsetWidth; // Ширина окна
