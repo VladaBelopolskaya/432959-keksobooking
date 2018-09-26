@@ -235,6 +235,9 @@ function noticeDisabled(argument) {
  * Активирует карту, форму и фильтры, добавляет пины в DOM, навешивает обрабочики на пины
  */
 function onPinMainMouseup() {
+  var templatePin = findElementTemplate('#pin', 'button');
+  var pinElements = createPinElements(pins, templatePin);
+
   var map = findElement('.map');
   var adForm = findElement('.ad-form');
   var mapFilters = findElement('.map__filters');
@@ -402,6 +405,9 @@ function removeChildFromDom(elem) {
   elem.remove();
 }
 
+/**
+ * Сброс страницы
+ */
 function onResetButtonMouseup() {
   var map = findElement('.map');
   var adForm = findElement('.ad-form');
@@ -427,8 +433,6 @@ function onResetButtonMouseup() {
 
 var widthMapPins = document.querySelector('.map__pins').offsetWidth; // Ширина окна
 var pins = createArrayPins(widthMapPins);
-var templatePin = findElementTemplate('#pin', 'button');
-var pinElements = createPinElements(pins, templatePin);
 
 noticeDisabled(true);
 var mapPinMain = findElement('.map__pin--main');
@@ -436,8 +440,6 @@ var address = findElement('#address');
 address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
 mapPinMain.addEventListener('mouseup', onPinMainMouseup);
 mapPinMain.addEventListener('mousedown', onPinMainMousedown);
-
-// не работает переключение пинов в фаерфоксе
 
 var typeOfHousing = findElement('#type');
 typeOfHousing.addEventListener('change', onSelectTypeChange);
