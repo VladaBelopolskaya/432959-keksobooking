@@ -357,42 +357,46 @@ function onSelectTimeOutChange() {
 }
 
 /**
- * Изменнение количества гостей в зависимости от типа жилья
+ * Изменение количества гостей в зависимости от типа жилья
  */
 function onRoomNumberChange() {
   var capacity = findElement('#capacity');
+  var capacity3 = findElement('#capacity_3');
+  var capacity2 = findElement('#capacity_2');
+  var capacity1 = findElement('#capacity_1');
+  var capacity0 = findElement('#capacity_0');
 
   switch (roomNumber.value) {
     case '1':
-      capacity.children[0].disabled = true;
-      capacity.children[1].disabled = true;
-      capacity.children[2].disabled = false;
-      capacity.children[3].disabled = true;
+      capacity3.disabled = true;
+      capacity2.disabled = true;
+      capacity1.disabled = false;
+      capacity0.disabled = true;
       capacity.value = '1';
       break;
     case '2':
-      capacity.children[0].disabled = true;
-      capacity.children[1].disabled = false;
-      capacity.children[2].disabled = false;
-      capacity.children[3].disabled = true;
+      capacity3.disabled = true;
+      capacity2.disabled = false;
+      capacity1.disabled = false;
+      capacity0.disabled = true;
       if (capacity.value === '0' || capacity.value === '3') {
         capacity.value = '2';
       }
       break;
     case '3':
-      capacity.children[0].disabled = false;
-      capacity.children[1].disabled = false;
-      capacity.children[2].disabled = false;
-      capacity.children[3].disabled = true;
+      capacity3.disabled = false;
+      capacity2.disabled = false;
+      capacity1.disabled = false;
+      capacity0.disabled = true;
       if (capacity.value === '0') {
         capacity.value = '3';
       }
       break;
     case '100':
-      capacity.children[0].disabled = true;
-      capacity.children[1].disabled = true;
-      capacity.children[2].disabled = true;
-      capacity.children[3].disabled = false;
+      capacity3.disabled = true;
+      capacity2.disabled = true;
+      capacity1.disabled = true;
+      capacity0.disabled = false;
       capacity.value = '0';
   }
 }
