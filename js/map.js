@@ -16,7 +16,35 @@ var PIN_WEIGHT = 50;
 var HALF_PIN_WEIGHT = 25;
 var HALF_MAIN_PIN_WEIGHT = 32.5;
 var MAIN_PIN_HEIGHT = 75;
-
+var PIN_TYPE_SETTINGS = {
+  flat: {
+    minprice: 1000,
+    placeholder: 1000
+  },
+  bungalo: {
+    minprice: 0,
+    placeholder: 0
+  },
+  house: {
+    minprice: 5000,
+    placeholder: 5000
+  },
+  palace: {
+    minprice: 10000,
+    placeholder: 10000
+  }
+}
+var PIN_TIME_SETTINGS = {
+  '12:00': {
+    time: '12:00'
+  },
+  '13:00': {
+    time: '13:00'
+  },
+  '14:00': {
+    time: '14:00'
+  }
+}
 
 /**
  * Выбор случайного числа между максимальным и минимальным
@@ -305,55 +333,25 @@ function onPinMainMousedown() {
  */
 function onSelectTypeChange() {
   var priceOfHousing = findElement('#price');
-  switch (typeOfHousing.value) {
-    case 'flat':
-      priceOfHousing.min = 1000;
-      priceOfHousing.placeholder = 1000;
-      break;
-    case 'bungalo':
-      priceOfHousing.min = 0;
-      priceOfHousing.placeholder = 0;
-      break;
-    case 'house':
-      priceOfHousing.min = 5000;
-      priceOfHousing.placeholder = 5000;
-      break;
-    case 'palace':
-      priceOfHousing.min = 10000;
-      priceOfHousing.placeholder = 10000;
-  }
+  var pinType = typeOfHousing.value;
+  priceOfHousing.min = PIN_TYPE_SETTINGS[pinType].minprice;
+  priceOfHousing.placeholder = PIN_TYPE_SETTINGS[pinType].placeholder;
 }
 
 /**
  * Изменение времени выезда в завистимости от времени заезда
  */
 function onSelectTimeInChange() {
-  switch (timeIn.value) {
-    case '12:00':
-      timeOut.value = '12:00';
-      break;
-    case '13:00':
-      timeOut.value = '13:00';
-      break;
-    case '14:00':
-      timeOut.value = '14:00';
-  }
+  var time = timeIn.value;
+  timeOut.value = PIN_TIME_SETTINGS[time].time;
 }
 
 /**
  * Изменение времени заезда в завсимости от вермени выезда
  */
 function onSelectTimeOutChange() {
-  switch (timeOut.value) {
-    case '12:00':
-      timeIn.value = '12:00';
-      break;
-    case '13:00':
-      timeIn.value = '13:00';
-      break;
-    case '14:00':
-      timeIn.value = '14:00';
-  }
+  var time = timeOut.value;
+  timeIn.value = PIN_TIME_SETTINGS[time].time;
 }
 
 /**
@@ -459,4 +457,4 @@ var roomNumber = findElement('#room_number');
 roomNumber.addEventListener('change', onRoomNumberChange);
 
 var resetButton = findElement('.ad-form__reset');
-resetButton.addEventListener('mouseup', onResetButtonMouseup)
+resetButton.addEventListener('mouseup', onResetButtonMouseup);
