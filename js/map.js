@@ -16,24 +16,25 @@ var PIN_WEIGHT = 50;
 var HALF_PIN_WEIGHT = 25;
 var HALF_MAIN_PIN_WEIGHT = 32.5;
 var MAIN_PIN_HEIGHT = 75;
+var MAIN_PIN_WEIGHT = 65
 var PIN_TYPE_SETTINGS = {
   flat: {
     minprice: 1000,
-    placeholder: 1000
+    placeholder: 1000,
   },
   bungalo: {
     minprice: 0,
-    placeholder: 0
+    placeholder: 0,
   },
   house: {
     minprice: 5000,
-    placeholder: 5000
+    placeholder: 5000,
   },
   palace: {
     minprice: 10000,
-    placeholder: 10000
-  }
-}
+    placeholder: 10000,
+  },
+};
 
 /**
  * Выбор случайного числа между максимальным и минимальным
@@ -42,7 +43,7 @@ var PIN_TYPE_SETTINGS = {
  * @return {number} случайное число
  */
 function randomInteger(min, max) {
-  var rand = min - 0.5 + Math.random() * (max - min + 1)
+  var rand = min - 0.5 + Math.random() * (max - min + 1);
   rand = Math.round(rand);
   return rand;
 }
@@ -83,7 +84,7 @@ function createArrayPins(widthMap) {
     }
     var data = {
       author: {
-        avatar: 'img/avatars/user0' + number + '.png'
+        avatar: 'img/avatars/user0' + number + '.png',
       },
       offer: {
         title: PIN_TITLE[i],
@@ -96,12 +97,12 @@ function createArrayPins(widthMap) {
         checkout: PIN_TIME[randomInteger(0, PIN_TIME.length - 1)],
         features: arrayFeatures,
         description: '',
-        photos: PIN_PHOTOS.sort(compareRandom)
+        photos: PIN_PHOTOS.sort(compareRandom),
       },
       location: {
         x: locatoinX,
-        y: locationY
-      }
+        y: locationY,
+      },
     };
 
     pins.push(data);
@@ -249,34 +250,6 @@ function noticeDisabled(argument) {
 }
 
 /**
- * Активирует карту, форму и фильтры, добавляет пины в DOM, навешивает обрабочики на пины
- */
-function onPinMainMouseup() {
-  var templatePin = findElementTemplate('#pin', 'button');
-  var pinElements = createPinElements(pins, templatePin);
-
-  var map = findElement('.map');
-  var adForm = findElement('.ad-form');
-  var mapFilters = findElement('.map__filters');
-
-  map.classList.remove('map--faded');
-  adForm.classList.remove('ad-form--disabled');
-  noticeDisabled(false);
-  mapFilters.classList.remove('ad-form--disabled');
-
-  addChildtoDom('.map__pins', pinElements);
-  var newCard = createСard(pins[0]);
-  addElementToDomBefore('.map', '.map__filters-container', newCard);
-
-  var mapPins = findElementAll('.map__pin');
-  for (var i = 1; i < mapPins.length; i++) {
-    mapPins[i].addEventListener('mouseup', onPinMouseup);
-  }
-
-  mapPinMain.removeEventListener('mouseup', onPinMainMouseup);
-}
-
-/**
  * Отображает карточку с подробной информацией
  */
 function onPinMouseup(evt) {
@@ -284,7 +257,7 @@ function onPinMouseup(evt) {
   var elementId = element.id;
   var idIndex = +elementId.substr(3);
   var newCard = createСard(pins[idIndex]);
-  var oldCard = findElement('.map__card')
+  var oldCard = findElement('.map__card');
   var parent = findElement('.map');
 
 
@@ -302,20 +275,11 @@ function onPinMouseup(evt) {
  * Закрывает попап
  */
 function onButtonCloseMouseup() {
-  var card = findElement('.map__card')
-  var parent = findElement('.map')
+  var card = findElement('.map__card');
+  var parent = findElement('.map');
   parent.removeChild(card);
 }
 
-/**
- * Изменяет адрес в зависимости от расположения главного пина
- */
-function onPinMainMousedown() {
-  var address = findElement('#address');
-  var locationX = HALF_MAIN_PIN_WEIGHT + mapPinMain.offsetLeft
-  var locationY = MAIN_PIN_HEIGHT + mapPinMain.offsetTop;
-  address.value = locationX + ', ' + locationY;
-}
 
 /**
  * Изменяет минимальное значение и placeholder в зависимости от типа жилья
@@ -346,43 +310,30 @@ function onSelectTimeOutChange() {
  */
 function onRoomNumberChange() {
   var capacity = findElement('#capacity');
-  var capacity3 = findElement('#capacity_3');
-  var capacity2 = findElement('#capacity_2');
-  var capacity1 = findElement('#capacity_1');
-  var capacity0 = findElement('#capacity_0');
+  var capacityChildren = capacity.children;
 
-  switch (roomNumber.value) {
-    case '1':
-      capacity3.disabled = true;
-      capacity2.disabled = true;
-      capacity1.disabled = false;
-      capacity0.disabled = true;
-      capacity.value = '1';
-      break;
-    case '2':
-      capacity3.disabled = true;
-      capacity2.disabled = false;
-      capacity1.disabled = false;
-      capacity0.disabled = true;
-      if (capacity.value === '0' || capacity.value === '3') {
-        capacity.value = '2';
+  if (capacity.value > roomNumber.value || capacity.value === '0') {
+    capacity.value = roomNumber.value;
+  }
+
+  if (roomNumber.value === '100') {
+    capacity.value = '0';
+    for (var i = 0; i < capacityChildren.length; i++) {
+      capacityChildren[i].disabled = true;
+      if (capacityChildren[i].value === '0') {
+        capacityChildren[i].disabled = false;
       }
-      break;
-    case '3':
-      capacity3.disabled = false;
-      capacity2.disabled = false;
-      capacity1.disabled = false;
-      capacity0.disabled = true;
-      if (capacity.value === '0') {
-        capacity.value = '3';
+    }
+  } else {
+    for (var j = 0; j < capacityChildren.length; j++) {
+      if (capacityChildren[j].value === '0') {
+        capacityChildren[j].disabled = true;
+      } else if (capacityChildren[j].value <= roomNumber.value) {
+        capacityChildren[j].disabled = false;
+      } else {
+        capacityChildren[j].disabled = true;
       }
-      break;
-    case '100':
-      capacity3.disabled = true;
-      capacity2.disabled = true;
-      capacity1.disabled = true;
-      capacity0.disabled = false;
-      capacity.value = '0';
+    }
   }
 }
 
@@ -419,8 +370,91 @@ function onResetButtonMouseup() {
   for (var i = 1; i < mapPins.length; i++) {
     removeChildFromDom(mapPins[i]);
   }
-
 }
+
+/**
+ * Активирует карту, форму и фильтры, добавляет пины в DOM, навешивает обрабочики на пины
+ */
+function onPinMainMouseup() {
+  var templatePin = findElementTemplate('#pin', 'button');
+  var pinElements = createPinElements(pins, templatePin);
+
+  var map = findElement('.map');
+  var adForm = findElement('.ad-form');
+  var mapFilters = findElement('.map__filters');
+
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  noticeDisabled(false);
+  mapFilters.classList.remove('ad-form--disabled');
+
+  addChildtoDom('.map__pins', pinElements);
+  var newCard = createСard(pins[0]);
+  addElementToDomBefore('.map', '.map__filters-container', newCard);
+
+  var mapPins = findElementAll('.map__pin');
+  for (var i = 1; i < mapPins.length; i++) {
+    mapPins[i].addEventListener('mouseup', onPinMouseup);
+  }
+
+  mapPinMain.removeEventListener('mouseup', onPinMainMouseup);
+}
+
+/**
+ * Передвижение пина
+ */
+function onPinMainMousedown(evt) {
+  var address = findElement('#address');
+  var locationX = HALF_MAIN_PIN_WEIGHT + mapPinMain.offsetLeft;
+  var locationY = MAIN_PIN_HEIGHT + mapPinMain.offsetTop;
+  var widthMapPins = document.querySelector('.map__pins').offsetWidth;
+  address.value = locationX + ', ' + locationY;
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY,
+  };
+
+  var onMouseMove = function (moveEvt) {
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    if (mapPinMain.offsetTop - shift.y > MAX_VERTICAL_COORDINATE) {
+      mapPinMain.style.top = MAX_VERTICAL_COORDINATE + 'px';
+    } else if (mapPinMain.offsetTop - shift.y < MIN_VERTICAL_COORDINATE) {
+      mapPinMain.style.top = MIN_VERTICAL_COORDINATE + 'px';
+    } else {
+      mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+    }
+
+    if (mapPinMain.offsetLeft - shift.x < 0) {
+      mapPinMain.style.left = 0 + 'px';
+    } else if (mapPinMain.offsetLeft - shift.x > widthMapPins - MAIN_PIN_WEIGHT) {
+      mapPinMain.style.left = widthMapPins - MAIN_PIN_WEIGHT + 'px';
+    } else {
+      mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+    }
+
+    locationX = HALF_MAIN_PIN_WEIGHT + mapPinMain.offsetLeft;
+    locationY = MAIN_PIN_HEIGHT + mapPinMain.offsetTop;
+    address.value = locationX + ', ' + locationY;
+  };
+
+  var onMouseUp = function () {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+};
 
 var widthMapPins = document.querySelector('.map__pins').offsetWidth; // Ширина окна
 var pins = createArrayPins(widthMapPins);
