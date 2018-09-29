@@ -34,17 +34,6 @@ var PIN_TYPE_SETTINGS = {
     placeholder: 10000
   }
 }
-var PIN_TIME_SETTINGS = {
-  '12:00': {
-    time: '12:00'
-  },
-  '13:00': {
-    time: '13:00'
-  },
-  '14:00': {
-    time: '14:00'
-  }
-}
 
 /**
  * Выбор случайного числа между максимальным и минимальным
@@ -342,16 +331,14 @@ function onSelectTypeChange() {
  * Изменение времени выезда в завистимости от времени заезда
  */
 function onSelectTimeInChange() {
-  var time = timeIn.value;
-  timeOut.value = PIN_TIME_SETTINGS[time].time;
+  timeOut.value = timeIn.value;
 }
 
 /**
  * Изменение времени заезда в завсимости от вермени выезда
  */
 function onSelectTimeOutChange() {
-  var time = timeOut.value;
-  timeIn.value = PIN_TIME_SETTINGS[time].time;
+  timeIn.value = timeOut.value;
 }
 
 /**
