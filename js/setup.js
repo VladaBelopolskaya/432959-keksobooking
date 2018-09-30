@@ -1,4 +1,4 @@
 'use strict'
 
 window.keksobooking = {};
-window.keksobooking.help = {};
+window.keksobooking.utils = {};

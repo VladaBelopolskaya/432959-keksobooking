@@ -12,16 +12,16 @@
     var elementId = element.id;
     var idIndex = +elementId.substr(3);
     var newCard = window.keksobooking.createСard(window.data.pins[idIndex]);
-    var oldCard = window.keksobooking.help.findElement('.map__card');
-    var parent = window.keksobooking.help.findElement('.map');
+    var oldCard = window.keksobooking.utils.findElement('.map__card');
+    var parent = window.keksobooking.utils.findElement('.map');
 
     if (oldCard) {
       parent.replaceChild(newCard, oldCard);
     } else {
-      window.keksobooking.help.addElementToDomBefore('.map', '.map__filters-container', newCard);
+      window.keksobooking.utils.addElementToDomBefore('.map', '.map__filters-container', newCard);
     }
 
-    var buttonClose = window.keksobooking.help.findElement('.popup__close');
+    var buttonClose = window.keksobooking.utils.findElement('.popup__close');
     buttonClose.addEventListener('mouseup', onButtonCloseMouseup);
   }
 
@@ -29,8 +29,8 @@
    * Закрывает попап
    */
   function onButtonCloseMouseup() {
-    var card = window.keksobooking.help.findElement('.map__card');
-    var parent = window.keksobooking.help.findElement('.map');
+    var card = window.keksobooking.utils.findElement('.map__card');
+    var parent = window.keksobooking.utils.findElement('.map');
     parent.removeChild(card);
   }
 
@@ -51,19 +51,19 @@
    * Активирует карту, форму и фильтры, добавляет пины в DOM, навешивает обрабочики на пины
    */
   window.keksobooking.onPinMainMouseup = function () {
-    var templatePin = window.keksobooking.help.findElementTemplate('#pin', 'button');
+    var templatePin = window.keksobooking.utils.findElementTemplate('#pin', 'button');
     var pinElements = window.keksobooking.createPinElements(window.data.pins, templatePin);
-    var map = window.keksobooking.help.findElement('.map');
-    var adForm = window.keksobooking.help.findElement('.ad-form');
-    var mapFilters = window.keksobooking.help.findElement('.map__filters');
+    var map = window.keksobooking.utils.findElement('.map');
+    var adForm = window.keksobooking.utils.findElement('.ad-form');
+    var mapFilters = window.keksobooking.utils.findElement('.map__filters');
     var newCard = window.keksobooking.createСard(window.data.pins[0]);
 
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
-    window.keksobooking.help.noticeDisabled(false);
+    window.keksobooking.utils.noticeDisabled(false);
     mapFilters.classList.remove('ad-form--disabled');
-    window.keksobooking.help.addChildtoDom('.map__pins', pinElements);
-    window.keksobooking.help.addElementToDomBefore('.map', '.map__filters-container', newCard);
+    window.keksobooking.utils.addChildtoDom('.map__pins', pinElements);
+    window.keksobooking.utils.addElementToDomBefore('.map', '.map__filters-container', newCard);
     map.addEventListener('mouseup', onMapMouseup)
     mapPinMain.removeEventListener('mouseup', window.keksobooking.onPinMainMouseup);
   };
@@ -72,7 +72,7 @@
    * Передвижение пина, изменение строки адреса в зависимости от расположения пина
    */
   function onPinMainMousedown(evt) {
-    var address = window.keksobooking.help.findElement('#address');
+    var address = window.keksobooking.utils.findElement('#address');
     var locationX = HALF_MAIN_PIN_WEIGHT + mapPinMain.offsetLeft;
     var locationY = MAIN_PIN_HEIGHT + mapPinMain.offsetTop;
     var widthMapPins = document.querySelector('.map__pins').offsetWidth;
@@ -131,9 +131,9 @@
     document.addEventListener('mouseup', onPinMainMouseUp);
   };
 
-  window.keksobooking.help.noticeDisabled(true);
-  var mapPinMain = window.keksobooking.help.findElement('.map__pin--main');
-  var address = window.keksobooking.help.findElement('#address');
+  window.keksobooking.utils.noticeDisabled(true);
+  var mapPinMain = window.keksobooking.utils.findElement('.map__pin--main');
+  var address = window.keksobooking.utils.findElement('#address');
   address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
 
   mapPinMain.addEventListener('mouseup', window.keksobooking.onPinMainMouseup);
