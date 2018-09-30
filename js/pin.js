@@ -6,7 +6,7 @@
  * @param {Element} templatePin элемент является кнопкой с тегом img внутри
  * @return {Element} новый элемент
  */
-window.createPinElements = function (pins, templatePin) {
+window.keksobooking.createPinElements = function (pins, templatePin) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < 8; i++) {
     var newElement = templatePin.cloneNode(true);

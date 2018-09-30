@@ -6,7 +6,7 @@
  * @param {string} tag тэг внутри template, который хотим клонировать
  * @return {Element} новый элемент
  */
-window.findElementTemplate = function (id, tag) {
+window.keksobooking.help.findElementTemplate = function (id, tag) {
   return document.querySelector(id).content.querySelector(tag);
 };
 
@@ -15,7 +15,7 @@ window.findElementTemplate = function (id, tag) {
  * @param {string} classElement класс элемента
  * @return {Element}
  */
-window.findElement = function (classElement) {
+window.keksobooking.help.findElement = function (classElement) {
   return document.querySelector(classElement);
 };
 
@@ -25,7 +25,7 @@ window.findElement = function (classElement) {
  * @return {NodeListOf<Element>}
  */
 
-window.findElementAll = function (classElements) {
+window.keksobooking.help.findElementAll = function (classElements) {
   return document.querySelectorAll(classElements);
 };
 
@@ -33,7 +33,7 @@ window.findElementAll = function (classElements) {
  * Удаление элемента из родительского элемента
  * @param {Element} elem родительский класс
  */
-window.removeChildFromDom = function (elem) {
+window.keksobooking.help.removeChildFromDom = function (elem) {
   elem.remove();
 };
 
@@ -41,8 +41,8 @@ window.removeChildFromDom = function (elem) {
  * Блокирует/разблокирует поля fielset внутри класса notice
  * @param {boolean} argument добавлять ли аргумент disabled fielset
  */
-window.noticeDisabled = function (argument) {
-  var fieldsetNotice = window.findElementAll('.notice fieldset');
+window.keksobooking.help.noticeDisabled = function (argument) {
+  var fieldsetNotice = window.keksobooking.help.findElementAll('.notice fieldset');
   for (var j = 0; j < fieldsetNotice.length; j++) {
     fieldsetNotice[j].disabled = argument;
   }
@@ -53,7 +53,7 @@ window.noticeDisabled = function (argument) {
  * @param {string} parentClass родительский класс
  * @param {Element} newChild новый дочерний элемент
  */
-window.addChildtoDom = function (parentClass, newChild) {
+window.keksobooking.help.addChildtoDom = function (parentClass, newChild) {
   document.querySelector(parentClass).appendChild(newChild);
 };
 
@@ -63,6 +63,6 @@ window.addChildtoDom = function (parentClass, newChild) {
  * @param {string} elementBeforeClass класс следующего элемента
  * @param {Element} newElement новый  элемент
  */
-window.addElementToDomBefore = function (parentClass, elementBeforeClass, newElement) {
+window.keksobooking.help.addElementToDomBefore = function (parentClass, elementBeforeClass, newElement) {
   document.querySelector(parentClass).insertBefore(newElement, document.querySelector(elementBeforeClass));
 };

@@ -8,21 +8,20 @@
   /**
    * Отображает карточку с подробной информацией
    */
-  function onPinMouseup(evt) {
-    var element = evt.currentTarget;
+  function onPinMouseup(element) {
     var elementId = element.id;
     var idIndex = +elementId.substr(3);
-    var newCard = window.createСard(window.data.pins[idIndex]);
-    var oldCard = window.findElement('.map__card');
-    var parent = window.findElement('.map');
+    var newCard = window.keksobooking.createСard(window.data.pins[idIndex]);
+    var oldCard = window.keksobooking.help.findElement('.map__card');
+    var parent = window.keksobooking.help.findElement('.map');
 
     if (oldCard) {
       parent.replaceChild(newCard, oldCard);
     } else {
-      window.addElementToDomBefore('.map', '.map__filters-container', newCard);
+      window.keksobooking.help.addElementToDomBefore('.map', '.map__filters-container', newCard);
     }
 
-    var buttonClose = window.findElement('.popup__close');
+    var buttonClose = window.keksobooking.help.findElement('.popup__close');
     buttonClose.addEventListener('mouseup', onButtonCloseMouseup);
   }
 
@@ -30,42 +29,50 @@
    * Закрывает попап
    */
   function onButtonCloseMouseup() {
-    var card = window.findElement('.map__card');
-    var parent = window.findElement('.map');
+    var card = window.keksobooking.help.findElement('.map__card');
+    var parent = window.keksobooking.help.findElement('.map');
     parent.removeChild(card);
+  }
+
+  /**
+   * Добавляет обработчик на пин
+   */
+  function onMapMouseup(evt) {
+    var element = evt.target;
+    if (element.className === 'map__pin' && element.className !== 'map__pin--main') {
+      onPinMouseup(element);
+    }
+    if (element.className === 'map__img-pin') {
+      onPinMouseup(element.parentNode);
+    }
   }
 
   /**
    * Активирует карту, форму и фильтры, добавляет пины в DOM, навешивает обрабочики на пины
    */
-  window.onPinMainMouseup = function () {
-    var templatePin = window.findElementTemplate('#pin', 'button');
-    var pinElements = window.createPinElements(window.data.pins, templatePin);
-    var map = window.findElement('.map');
-    var adForm = window.findElement('.ad-form');
-    var mapFilters = window.findElement('.map__filters');
-    var newCard = window.createСard(window.data.pins[0]);
-    var mapPins = window.findElementAll('.map__pin');
+  window.keksobooking.onPinMainMouseup = function () {
+    var templatePin = window.keksobooking.help.findElementTemplate('#pin', 'button');
+    var pinElements = window.keksobooking.createPinElements(window.data.pins, templatePin);
+    var map = window.keksobooking.help.findElement('.map');
+    var adForm = window.keksobooking.help.findElement('.ad-form');
+    var mapFilters = window.keksobooking.help.findElement('.map__filters');
+    var newCard = window.keksobooking.createСard(window.data.pins[0]);
 
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
-    window.noticeDisabled(false);
+    window.keksobooking.help.noticeDisabled(false);
     mapFilters.classList.remove('ad-form--disabled');
-    window.addChildtoDom('.map__pins', pinElements);
-    window.addElementToDomBefore('.map', '.map__filters-container', newCard);
-
-    for (var i = 1; i < mapPins.length; i++) {
-      mapPins[i].addEventListener('mouseup', onPinMouseup);
-    }
-
-    mapPinMain.removeEventListener('mouseup', window.onPinMainMouseup);
+    window.keksobooking.help.addChildtoDom('.map__pins', pinElements);
+    window.keksobooking.help.addElementToDomBefore('.map', '.map__filters-container', newCard);
+    map.addEventListener('mouseup', onMapMouseup)
+    mapPinMain.removeEventListener('mouseup', window.keksobooking.onPinMainMouseup);
   };
 
   /**
-   * Передвижение пина
+   * Передвижение пина, изменение строки адреса в зависимости от расположения пина
    */
   function onPinMainMousedown(evt) {
-    var address = window.findElement('#address');
+    var address = window.keksobooking.help.findElement('#address');
     var locationX = HALF_MAIN_PIN_WEIGHT + mapPinMain.offsetLeft;
     var locationY = MAIN_PIN_HEIGHT + mapPinMain.offsetTop;
     var widthMapPins = document.querySelector('.map__pins').offsetWidth;
@@ -76,7 +83,11 @@
       y: evt.clientY,
     };
 
-    var onMouseMove = function (moveEvt) {
+
+    /**
+     * Изменение строки адреса в зависимости от расположения пина
+     */
+    var onPinMainMousemove = function (moveEvt) {
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY,
@@ -108,20 +119,23 @@
       address.value = locationX + ', ' + locationY;
     };
 
-    var onMouseUp = function () {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
+    /**
+     * Удаление обрабочика передвижения мыши
+     */
+    var onPinMainMouseUp = function () {
+      document.removeEventListener('mousemove', onPinMainMousemove);
+      document.removeEventListener('mouseup', onPinMainMouseUp);
     };
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+    document.addEventListener('mousemove', onPinMainMousemove);
+    document.addEventListener('mouseup', onPinMainMouseUp);
   };
 
-  window.noticeDisabled(true);
-  var mapPinMain = window.findElement('.map__pin--main');
-  var address = window.findElement('#address');
+  window.keksobooking.help.noticeDisabled(true);
+  var mapPinMain = window.keksobooking.help.findElement('.map__pin--main');
+  var address = window.keksobooking.help.findElement('#address');
   address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
 
-  mapPinMain.addEventListener('mouseup', window.onPinMainMouseup);
+  mapPinMain.addEventListener('mouseup', window.keksobooking.onPinMainMouseup);
   mapPinMain.addEventListener('mousedown', onPinMainMousedown);
 })();

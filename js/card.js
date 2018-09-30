@@ -5,8 +5,8 @@
  * @param {Element} arrayElement элемант массива, на основе которого надо сделать карточку
  * @return {Element} новый элемент
  */
-window.createСard = function (arrayElement) {
-  var templateCard = window.findElementTemplate('#card', 'article');
+window.keksobooking.createСard = function (arrayElement) {
+  var templateCard = window.keksobooking.help.findElementTemplate('#card', 'article');
   var newElementCard = templateCard.cloneNode(true);
   var typeOfferEng = arrayElement.offer.type;
   var typeOfferRus = '';
