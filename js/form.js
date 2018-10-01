@@ -24,7 +24,7 @@
    * Изменяет минимальное значение и placeholder в зависимости от типа жилья
    */
   function onSelectTypeChange() {
-    var priceOfHousing = window.findElement('#price');
+    var priceOfHousing = window.keksobooking.utils.findElement('#price');
     var pinType = typeOfHousing.value;
     priceOfHousing.min = PIN_TYPE_SETTINGS[pinType].minprice;
     priceOfHousing.placeholder = PIN_TYPE_SETTINGS[pinType].placeholder;
@@ -48,26 +48,26 @@
    * Сброс страницы
    */
   function onResetButtonMouseup() {
-    var map = window.findElement('.map');
-    var adForm = window.findElement('.ad-form');
-    var mapFilters = window.findElement('.map__filters');
-    var mapPinMain = window.findElement('.map__pin--main');
-    mapPinMain.addEventListener('mouseup', window.onPinMainMouseup);
-    var address = window.findElement('#address');
-    var mapCard = window.findElement('.map__card');
+    var map = window.keksobooking.utils.findElement('.map');
+    var adForm = window.keksobooking.utils.findElement('.ad-form');
+    var mapFilters = window.keksobooking.utils.findElement('.map__filters');
+    var mapPinMain = window.keksobooking.utils.findElement('.map__pin--main');
+    mapPinMain.addEventListener('mouseup', window.keksobooking.onPinMainMouseup);
+    var address = window.keksobooking.utils.findElement('#address');
+    var mapCard = window.keksobooking.utils.findElement('.map__card');
 
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
     adForm.reset();
-    window.noticeDisabled(true);
+    window.keksobooking.utils.noticeDisabled(true);
     mapFilters.classList.add('ad-form--disabled');
     address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
 
-    window.removeChildFromDom(mapCard);
+    window.keksobooking.utils.removeChildFromDom(mapCard);
 
-    var mapPins = window.findElementAll('.map__pin');
+    var mapPins = window.keksobooking.utils.findElementAll('.map__pin');
     for (var i = 1; i < mapPins.length; i++) {
-      window.removeChildFromDom(mapPins[i]);
+      window.keksobooking.utils.removeChildFromDom(mapPins[i]);
     }
   }
 
@@ -75,7 +75,7 @@
    * Изменение количества гостей в зависимости от типа жилья
    */
   function onRoomNumberChange() {
-    var capacity = window.findElement('#capacity');
+    var capacity = window.keksobooking.utils.findElement('#capacity');
     var capacityChildren = capacity.children;
 
     if (capacity.value > roomNumber.value || capacity.value === '0') {
@@ -103,14 +103,14 @@
     }
   }
 
-  var typeOfHousing = window.findElement('#type');
+  var typeOfHousing = window.keksobooking.utils.findElement('#type');
   typeOfHousing.addEventListener('change', onSelectTypeChange);
-  var timeIn = window.findElement('#timein');
+  var timeIn = window.keksobooking.utils.findElement('#timein');
   timeIn.addEventListener('change', onSelectTimeInChange);
-  var timeOut = window.findElement('#timeout');
+  var timeOut = window.keksobooking.utils.findElement('#timeout');
   timeOut.addEventListener('change', onSelectTimeOutChange);
-  var resetButton = window.findElement('.ad-form__reset');
+  var resetButton = window.keksobooking.utils.findElement('.ad-form__reset');
   resetButton.addEventListener('mouseup', onResetButtonMouseup);
-  var roomNumber = window.findElement('#room_number');
+  var roomNumber = window.keksobooking.utils.findElement('#room_number');
   roomNumber.addEventListener('change', onRoomNumberChange);
 })();
