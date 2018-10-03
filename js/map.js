@@ -4,6 +4,7 @@
   var HALF_MAIN_PIN_WEIGHT = 32.5;
   var MAIN_PIN_HEIGHT = 75;
   var MAIN_PIN_WEIGHT = 65;
+  var PINS_ARRAY_FROM_BACK = null;
 
   /**
    * Отображает карточку с подробной информацией
@@ -11,10 +12,9 @@
   function onPinMouseup(element) {
     var elementId = element.id;
     var idIndex = +elementId.substr(3);
-    var newCard = window.keksobooking.createСard(window.data.pins[idIndex]);
     var oldCard = window.keksobooking.utils.findElement('.map__card');
     var parent = window.keksobooking.utils.findElement('.map');
-
+    var newCard = window.keksobooking.createСard(PINS_ARRAY_FROM_BACK[idIndex]);
     if (oldCard) {
       parent.replaceChild(newCard, oldCard);
     } else {
@@ -47,23 +47,38 @@
     }
   }
 
+  function successLoad(resp) {
+    PINS_ARRAY_FROM_BACK = resp;
+    var templatePin = window.keksobooking.utils.findElementTemplate('#pin', 'button');
+    var pinElements = window.keksobooking.createPinElements(resp, templatePin);
+    window.keksobooking.utils.addChildtoDom('.map__pins', pinElements);
+
+    var newCard = window.keksobooking.createСard(PINS_ARRAY_FROM_BACK[0]);
+    window.keksobooking.utils.addElementToDomBefore('.map', '.map__filters-container', newCard);
+  }
+
+  function errorLoad(message) {
+    var templateError = window.keksobooking.utils.findElementTemplate('#error', 'div');
+    var newElement = templateError.cloneNode(true);
+    newElement.children[0].textContent = message;
+    document.body.insertAdjacentElement('afterbegin', newElement);
+  }
+
   /**
    * Активирует карту, форму и фильтры, добавляет пины в DOM, навешивает обрабочики на пины
    */
   window.keksobooking.onPinMainMouseup = function () {
-    var templatePin = window.keksobooking.utils.findElementTemplate('#pin', 'button');
-    var pinElements = window.keksobooking.createPinElements(window.data.pins, templatePin);
+
     var map = window.keksobooking.utils.findElement('.map');
     var adForm = window.keksobooking.utils.findElement('.ad-form');
     var mapFilters = window.keksobooking.utils.findElement('.map__filters');
-    var newCard = window.keksobooking.createСard(window.data.pins[0]);
+
+    window.keksobooking.loadPins(successLoad, errorLoad);
 
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     window.keksobooking.utils.noticeDisabled(false);
     mapFilters.classList.remove('ad-form--disabled');
-    window.keksobooking.utils.addChildtoDom('.map__pins', pinElements);
-    window.keksobooking.utils.addElementToDomBefore('.map', '.map__filters-container', newCard);
     map.addEventListener('mouseup', onMapMouseup)
     mapPinMain.removeEventListener('mouseup', window.keksobooking.onPinMainMouseup);
   };

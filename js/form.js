@@ -57,11 +57,13 @@
     var mapCard = window.keksobooking.utils.findElement('.map__card');
 
     map.classList.add('map--faded');
+    address.value = '570, 375'; //не срабатывает
     adForm.classList.add('ad-form--disabled');
     adForm.reset();
     window.keksobooking.utils.noticeDisabled(true);
     mapFilters.classList.add('ad-form--disabled');
-    address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
+    mapPinMain.style.cssText = 'left: 570px; top: 375px;';
+
 
     window.keksobooking.utils.removeChildFromDom(mapCard);
 
@@ -103,6 +105,29 @@
     }
   }
 
+  function onFormSubmit(evt) {
+    var adForm = window.keksobooking.utils.findElement('.ad-form');
+    window.keksobooking.upload(new FormData(adForm), function () {
+      adForm.reset();
+      var templateSuccess = window.keksobooking.utils.findElementTemplate('#success', 'div');
+      var newElement = templateSuccess.cloneNode(true);
+      document.body.insertAdjacentElement('afterbegin', newElement);
+
+      newElement.addEventListener('mouseup', function () {
+        window.keksobooking.utils.removeChildFromDom(newElement);
+      });
+      newElement.addEventListener('keydown', function (evnt) {
+        if (evnt.keyCode === 27) { //ругается что устаревший символ???
+          window.keksobooking.utils.removeChildFromDom(newElement);
+        }
+      });
+    });
+
+    onResetButtonMouseup(); //можно ли так делать?
+
+    evt.preventDefault();
+  }
+
   var typeOfHousing = window.keksobooking.utils.findElement('#type');
   typeOfHousing.addEventListener('change', onSelectTypeChange);
   var timeIn = window.keksobooking.utils.findElement('#timein');
@@ -111,6 +136,8 @@
   timeOut.addEventListener('change', onSelectTimeOutChange);
   var resetButton = window.keksobooking.utils.findElement('.ad-form__reset');
   resetButton.addEventListener('mouseup', onResetButtonMouseup);
+  var adForm = window.keksobooking.utils.findElement('.ad-form');
+  adForm.addEventListener('submit', onFormSubmit);
   var roomNumber = window.keksobooking.utils.findElement('#room_number');
   roomNumber.addEventListener('change', onRoomNumberChange);
 })();
