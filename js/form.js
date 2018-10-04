@@ -61,6 +61,7 @@
     adForm.reset();
     window.keksobooking.utils.noticeDisabled(true);
     mapFilters.classList.add('ad-form--disabled');
+    mapPinMain.style.cssText = 'left: 570px; top: 375px;';
     address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
 
     window.keksobooking.utils.removeChildFromDom(mapCard);
@@ -101,6 +102,61 @@
         }
       }
     }
+  };
+
+  /**
+   * Скрытие эементра при нажатии на ESC или произвольную область
+   * @param {Element} element на который нужно навесить обработчик
+   */
+  window.keksobooking.listnerClosePopup = function (element) {
+    element.addEventListener('mouseup', function () {
+      window.keksobooking.utils.removeChildFromDom(element);
+    });
+
+    /**
+     * Закрытие попапа при нажатии на кнопку ESC
+     * @param evnt
+     */
+    function onDocumentKeydown(evnt) {
+      if (evnt.keyCode === 27) {
+        window.keksobooking.utils.removeChildFromDom(element);
+      }
+      document.removeEventListener('keydown', onDocumentKeydown);
+    };
+
+    document.addEventListener('keydown', onDocumentKeydown);
+  }
+
+  /**
+   * Сброс формы и сообщение об успешной отправке
+   */
+  function upLoadSuccess() {
+    onResetButtonMouseup(); //можно ли так делать?
+
+    var templateSuccess = window.keksobooking.utils.findElementTemplate('#success', 'div');
+    var newElement = templateSuccess.cloneNode(true);
+    document.body.insertAdjacentElement('afterbegin', newElement);
+    window.keksobooking.listnerClosePopup(newElement);
+  };
+
+  /**
+   * Сообщение об ошибке
+   */
+  function upLoadError() {
+    var templateError = window.keksobooking.utils.findElementTemplate('#error', 'div');
+    var newElement = templateError.cloneNode(true);
+    document.body.insertAdjacentElement('afterbegin', newElement);
+
+    window.keksobooking.listnerClosePopup(newElement);
+  };
+
+  /**
+   * Сброс страницы, сообщение об успешной отвравке данных, обработчик закрытия сообщения
+   * @param evt
+   */
+  function onFormSubmit(evt) {
+    window.keksobooking.upload(new FormData(adForm), upLoadSuccess, upLoadError);
+    evt.preventDefault();
   }
 
   var typeOfHousing = window.keksobooking.utils.findElement('#type');
@@ -111,6 +167,8 @@
   timeOut.addEventListener('change', onSelectTimeOutChange);
   var resetButton = window.keksobooking.utils.findElement('.ad-form__reset');
   resetButton.addEventListener('mouseup', onResetButtonMouseup);
+  var adForm = window.keksobooking.utils.findElement('.ad-form');
+  adForm.addEventListener('submit', onFormSubmit);
   var roomNumber = window.keksobooking.utils.findElement('#room_number');
   roomNumber.addEventListener('change', onRoomNumberChange);
 })();

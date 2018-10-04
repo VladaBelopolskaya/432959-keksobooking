@@ -48,10 +48,10 @@
       var locatoinX = randomInteger(0, widthMap - PIN_WEIGHT) + HALF_PIN_WEIGHT;
       var locationY = randomInteger(MIN_VERTICAL_COORDINATE + PIN_HEIGHT, MAX_VERTICAL_COORDINATE - PIN_HEIGHT) + PIN_HEIGHT;
       var arrayFeatures = [];
-      var arrayFeatureLenght = randomInteger(0, PIN_FEATURES.length - 1);
-      for (var j = 0; j <= arrayFeatureLenght; j++) {
-        arrayFeatures.push(PIN_FEATURES[j]);
-      }
+      // var arrayFeatureLenght = randomInteger(0, PIN_FEATURES.length - 1);
+      // for (var j = 0; j <= arrayFeatureLenght; j++) {
+      //   arrayFeatures.push(PIN_FEATURES[j]);
+      // }
       var data = {
         author: {
           avatar: 'img/avatars/user0' + number + '.png',
