@@ -47,6 +47,10 @@
     }
   }
 
+  /**
+   * Успешная загрузка
+   * @param resp
+   */
   function successLoad(resp) {
     PINS_ARRAY_FROM_BACK = resp;
     var templatePin = window.keksobooking.utils.findElementTemplate('#pin', 'button');
@@ -57,15 +61,21 @@
     window.keksobooking.utils.addElementToDomBefore('.map', '.map__filters-container', newCard);
   }
 
+  /**
+   * Не успешная загрузка
+   * @param {text} message текст ошибки
+   */
   function errorLoad(message) {
     var templateError = window.keksobooking.utils.findElementTemplate('#error', 'div');
     var newElement = templateError.cloneNode(true);
     newElement.children[0].textContent = message;
     document.body.insertAdjacentElement('afterbegin', newElement);
+
+    window.keksobooking.listnerClosePopup(newElement);
   }
 
   /**
-   * Активирует карту, форму и фильтры, добавляет пины в DOM, навешивает обрабочики на пины
+   * Активирует карту, форму и фильтры, загружает и добавляет пины в DOM, навешивает обрабочики на пины
    */
   window.keksobooking.onPinMainMouseup = function () {
 

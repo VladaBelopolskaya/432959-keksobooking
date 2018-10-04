@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var PIN_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   /**
    * Создание и заполнение карточкии
    * @param {Element} arrayElement элемант массива, на основе которого надо сделать карточку
@@ -14,12 +15,23 @@
     var numberOfRooms = arrayElement.offer.rooms;
     var declination = '';
 
-    var outFeatures = [];
-    for (var k = arrayElement.offer.features.length; k < window.data.PIN_FEATURES.length; k++) {
-      outFeatures.push(window.data.PIN_FEATURES[k]);
+    var features = arrayElement.offer.features;
+    var deleteFeatures = [];
+
+    for (var i = 0; i < PIN_FEATURES.length; i++) {
+      var a = 0;
+      for (var j = 0; j < features.length; j++) {
+        if (PIN_FEATURES[i] !== features[j]) {
+          a = a + 1;
+        }
+      }
+      if (a === features.length) {
+        deleteFeatures.push(PIN_FEATURES[i]);
+      }
     }
-    for (var m = 0; m < outFeatures.length; m++) {
-      newElementCard.querySelector('.popup__features > .popup__feature--' + outFeatures[m]).remove();
+
+    for (var m = 0; m < deleteFeatures.length; m++) {
+      newElementCard.querySelector('.popup__features > .popup__feature--' + deleteFeatures[m]).remove();
     }
 
     switch (typeOfferEng) {
@@ -58,15 +70,15 @@
     newElementCard.querySelector('.popup__avatar').src = arrayElement.author.avatar;
 
     var fragmentPhoto = document.createDocumentFragment();
-    for (var i = 0; i < window.data.PIN_PHOTOS.length - 1; i++) {
+    for (var i = 0; i < arrayElement.offer.photos.length - 1; i++) {
       var newPhoto = newElementCard.querySelector('.popup__photos > .popup__photo').cloneNode(true);
       fragmentPhoto.appendChild(newPhoto);
     }
     newElementCard.querySelector('.popup__photos').appendChild(fragmentPhoto);
 
     var arrayPhotos = newElementCard.querySelectorAll('.popup__photos > .popup__photo');
-    for (var j = 0; j < window.data.PIN_PHOTOS.length; j++) {
-      arrayPhotos[j].src = window.data.PIN_PHOTOS[j];
+    for (var j = 0; j < arrayElement.offer.photos.length; j++) {
+      arrayPhotos[j].src = arrayElement.offer.photos[j];
     }
 
     return newElementCard;

@@ -57,13 +57,12 @@
     var mapCard = window.keksobooking.utils.findElement('.map__card');
 
     map.classList.add('map--faded');
-    address.value = '570, 375'; //не срабатывает
     adForm.classList.add('ad-form--disabled');
     adForm.reset();
     window.keksobooking.utils.noticeDisabled(true);
     mapFilters.classList.add('ad-form--disabled');
     mapPinMain.style.cssText = 'left: 570px; top: 375px;';
-
+    address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
 
     window.keksobooking.utils.removeChildFromDom(mapCard);
 
@@ -103,28 +102,60 @@
         }
       }
     }
-  }
+  };
 
-  function onFormSubmit(evt) {
-    var adForm = window.keksobooking.utils.findElement('.ad-form');
-    window.keksobooking.upload(new FormData(adForm), function () {
-      adForm.reset();
-      var templateSuccess = window.keksobooking.utils.findElementTemplate('#success', 'div');
-      var newElement = templateSuccess.cloneNode(true);
-      document.body.insertAdjacentElement('afterbegin', newElement);
-
-      newElement.addEventListener('mouseup', function () {
-        window.keksobooking.utils.removeChildFromDom(newElement);
-      });
-      newElement.addEventListener('keydown', function (evnt) {
-        if (evnt.keyCode === 27) { //ругается что устаревший символ???
-          window.keksobooking.utils.removeChildFromDom(newElement);
-        }
-      });
+  /**
+   * Скрытие эементра при нажатии на ESC или произвольную область
+   * @param {Element} element на который нужно навесить обработчик
+   */
+  window.keksobooking.listnerClosePopup = function (element) {
+    element.addEventListener('mouseup', function () {
+      window.keksobooking.utils.removeChildFromDom(element);
     });
 
+    /**
+     * Закрытие попапа при нажатии на кнопку ESC
+     * @param evnt
+     */
+    function onDocumentKeydown(evnt) {
+      if (evnt.keyCode === 27) {
+        window.keksobooking.utils.removeChildFromDom(element);
+      }
+      document.removeEventListener('keydown', onDocumentKeydown);
+    };
+
+    document.addEventListener('keydown', onDocumentKeydown);
+  }
+
+  /**
+   * Сброс формы и сообщение об успешной отправке
+   */
+  function upLoadSuccess() {
     onResetButtonMouseup(); //можно ли так делать?
 
+    var templateSuccess = window.keksobooking.utils.findElementTemplate('#success', 'div');
+    var newElement = templateSuccess.cloneNode(true);
+    document.body.insertAdjacentElement('afterbegin', newElement);
+    window.keksobooking.listnerClosePopup(newElement);
+  };
+
+  /**
+   * Сообщение об ошибке
+   */
+  function upLoadError() {
+    var templateError = window.keksobooking.utils.findElementTemplate('#error', 'div');
+    var newElement = templateError.cloneNode(true);
+    document.body.insertAdjacentElement('afterbegin', newElement);
+
+    window.keksobooking.listnerClosePopup(newElement);
+  };
+
+  /**
+   * Сброс страницы, сообщение об успешной отвравке данных, обработчик закрытия сообщения
+   * @param evt
+   */
+  function onFormSubmit(evt) {
+    window.keksobooking.upload(new FormData(adForm), upLoadSuccess, upLoadError);
     evt.preventDefault();
   }
 

@@ -8,7 +8,11 @@ window.keksobooking.upload = function (data, onLoad, onError) {
   xhr.responseType = 'json';
 
   xhr.addEventListener('load', function () {
-    onLoad(xhr.response);
+    if (xhr.status !== 500) {
+      onLoad(xhr.response);
+    } else {
+      onError();
+    }
   });
 
   xhr.open('POST', URL_SEND);
