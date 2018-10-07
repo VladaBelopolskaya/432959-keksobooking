@@ -1,15 +1,16 @@
 'use strict';
 
 (function () {
+  var NUMBER_OF_PINS = 5;
   /**
    * Создание и заполнение пина
    * @param {array} pins массив данных, в которых есть location, author, offer
-   * @param {Element} templatePin элемент является кнопкой с тегом img внутри
    * @return {Element} новый элемент
    */
-  window.keksobooking.createPinElements = function (pins, templatePin) {
+  window.keksobooking.createPinElements = function (pins) {
+    var templatePin = window.keksobooking.utils.findElementTemplate('#pin', 'button');
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < 8; i++) {
+    for (var i = 0; i < NUMBER_OF_PINS; i++) {
       var newElement = templatePin.cloneNode(true);
       newElement.id = 'pin' + i;
       newElement.style.cssText = 'left: ' + pins[i].location.x + 'px; top: ' + pins[i].location.y + 'px;';

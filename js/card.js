@@ -16,19 +16,11 @@
     var declination = '';
 
     var features = arrayElement.offer.features;
-    var deleteFeatures = [];
-
-    for (var i = 0; i < PIN_FEATURES.length; i++) {
-      var a = 0;
-      for (var j = 0; j < features.length; j++) {
-        if (PIN_FEATURES[i] !== features[j]) {
-          a = a + 1;
-        }
-      }
-      if (a === features.length) {
-        deleteFeatures.push(PIN_FEATURES[i]);
-      }
-    }
+    var deleteFeatures = PIN_FEATURES.filter(function (itemAllFeatures) {
+      return (!features.some(function (itemPinFeatures) {
+        return itemAllFeatures === itemPinFeatures;
+      }));
+    });
 
     for (var m = 0; m < deleteFeatures.length; m++) {
       newElementCard.querySelector('.popup__features > .popup__feature--' + deleteFeatures[m]).remove();

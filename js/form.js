@@ -131,7 +131,7 @@
    * Сброс формы и сообщение об успешной отправке
    */
   function upLoadSuccess() {
-    onResetButtonMouseup(); //можно ли так делать?
+    onResetButtonMouseup();
 
     var templateSuccess = window.keksobooking.utils.findElementTemplate('#success', 'div');
     var newElement = templateSuccess.cloneNode(true);
