@@ -35,7 +35,7 @@
   }
 
   /**
-   * Добавляет обработчик на пин
+   * Обработчик, который чекает по какому элементу карты произошел клик и если этот элемент - пин, то он открывает карточку с описанием этого пина
    */
   function onMapMouseup(evt) {
     var element = evt.target;
@@ -92,8 +92,8 @@
     var mapFilters = window.keksobooking.utils.findElement('.map__filters');
 
     var mapFilter = window.keksobooking.utils.findElementAll('.map__filter');
-    mapFilter.forEach(function (element) {
-      element.disabled = true;
+    mapFilter.forEach(function (item) {
+      item.disabled = true;
     });
 
     var mapFeatures = window.keksobooking.utils.findElement('.map__features');
@@ -123,7 +123,6 @@
       x: evt.clientX,
       y: evt.clientY,
     };
-
 
     /**
      * Изменение строки адреса в зависимости от расположения пина

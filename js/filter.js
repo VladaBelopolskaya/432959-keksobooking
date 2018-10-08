@@ -6,32 +6,36 @@
   var rooms = '';
   var guests = '';
   var features = [];
+  var DEBOUNCE_INTERVAL = 500;
 
   /**
-   * Обновление пинов, которые нужно отрисовать на карте
+   * Определяет порядок сортировки, если ранг следующего элемента больше предыдущего, то элементы меняются местами. Если ранги элементов равны, то они сортируются в соответсвии их вхождения в исходном массиве
+   * @param {Element} left предыдущий элемент
+   * @param {Element} right последующий элемент
+   * @return {number} если число положительное, то элементы меняются местами. Если число отрицательное, то не меняются местами
+   */
+  function comparison(left, right) {
+    var rankDiff = getRank(right) - getRank(left);
+    if ((rankDiff) === 0) {
+      rankDiff = window.keksobooking.PINS_ARRAY_FROM_BACK.indexOf(left) - window.keksobooking.PINS_ARRAY_FROM_BACK.indexOf(right);
+    }
+    return rankDiff;
+  }
+  /**
+   * Удаление всех пинов с карты (кроме самого главного), сортировка массива пинов в соответсвии со степенью похожести на то, что указано в фильтрах, отрисовываение новых пинов на карту
    */
   function updatePins() {
-    var filteredPin = window.keksobooking.PINS_ARRAY_FROM_BACK.sort(function (left, right) {
-      var rankDiff = getRank(right) - getRank(left);
-      if ((rankDiff) === 0) {
-        rankDiff = window.keksobooking.PINS_ARRAY_FROM_BACK.indexOf(left) - window.keksobooking.PINS_ARRAY_FROM_BACK.indexOf(right);
-      }
-      return rankDiff;
-    });
-
-    var oldPins = window.keksobooking.utils.findElementAll('.map__pin');
-    for (var i = 1; i < oldPins.length; i++) {
-      window.keksobooking.utils.removeChildFromDom(oldPins[i]);
-    }
+    window.keksobooking.utils.deletePinsFromMap();
+    var filteredPin = window.keksobooking.PINS_ARRAY_FROM_BACK.sort(comparison);
 
     var pinElements = window.keksobooking.createPinElements(filteredPin);
     window.keksobooking.utils.addChildtoDom('.map__pins', pinElements);
   }
 
   /**
-   * Высчитывание ранка для соответсвующего пина
+   * Высчитывание степени схожести объявления с фильтрами (ранга) для соответсвующего пина. Минимальное возвращаемое значение 0, максимальное 10 (количество используемых фильтров). Если пин соответсвует выбранному фильтру, то к его рангу прибавляется 1.
    * @param {Element} pin пин из массива пинов
-   * @return {number} число (чем больше, теб элемент более похож на то, что выставлено в фильтрах)
+   * @return {number} число от 0 до 10
    */
   function getRank(pin) {
     var rank = 0;
@@ -53,13 +57,11 @@
     }
 
     var featuresPin = pin.offer.features;
-
-    for (var i = 0; i < features.length; i++) {
-      if (featuresPin.indexOf(features[i]) > -1) {
+    features.forEach(function (item) {
+      if (featuresPin.indexOf(item) > -1) {
         rank += 1;
       }
-    }
-
+    });
     return rank;
   }
 
@@ -92,31 +94,32 @@
       features.push(filterConditioner.value);
     }
 
-    window.setTimeout(function () {
-      updatePins();
-    }, 1000);
+    updatePins();
+  }
+
+  function debounce(fun) {
+    var lastTimeout = null;
+
+    return function () {
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(fun, DEBOUNCE_INTERVAL);
+    };
   }
 
   var housingType = window.keksobooking.utils.findElement('#housing-type');
-  housingType.addEventListener('change', onChangeValue);
   var housingPrice = window.keksobooking.utils.findElement('#housing-price');
-  housingPrice.addEventListener('change', onChangeValue);
   var housingRooms = window.keksobooking.utils.findElement('#housing-rooms');
-  housingRooms.addEventListener('change', onChangeValue);
   var housingGuests = window.keksobooking.utils.findElement('#housing-guests');
-  housingGuests.addEventListener('change', onChangeValue);
-  var housingFeatures = window.keksobooking.utils.findElement('#housing-features');
-  housingFeatures.addEventListener('change', onChangeValue);
   var filterWifi = window.keksobooking.utils.findElement('#filter-wifi');
-  filterWifi.addEventListener('change', onChangeValue);
   var filterDishwasher = window.keksobooking.utils.findElement('#filter-dishwasher');
-  filterDishwasher.addEventListener('change', onChangeValue);
   var filterParking = window.keksobooking.utils.findElement('#filter-parking');
-  filterParking.addEventListener('change', onChangeValue);
   var filterWasher = window.keksobooking.utils.findElement('#filter-washer');
-  filterWasher.addEventListener('change', onChangeValue);
   var filterElevator = window.keksobooking.utils.findElement('#filter-elevator');
-  filterElevator.addEventListener('change', onChangeValue);
   var filterConditioner = window.keksobooking.utils.findElement('#filter-conditioner');
-  filterConditioner.addEventListener('change', onChangeValue);
+  var arrayOfID = ['#housing-type', '#housing-price', '#housing-rooms', '#housing-guests', '#housing-features', '#filter-wifi', '#filter-dishwasher', '#filter-parking', '#filter-washer', '#filter-elevator', '#filter-conditioner'];
+  arrayOfID.forEach(function (item) {
+    window.keksobooking.utils.findElement(item).addEventListener('change', debounce(onChangeValue));
+  });
 })();

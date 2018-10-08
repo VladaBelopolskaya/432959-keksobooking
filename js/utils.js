@@ -44,9 +44,9 @@
    */
   window.keksobooking.utils.noticeDisabled = function (argument) {
     var fieldsetNotice = window.keksobooking.utils.findElementAll('.notice fieldset');
-    for (var j = 0; j < fieldsetNotice.length; j++) {
-      fieldsetNotice[j].disabled = argument;
-    }
+    fieldsetNotice.forEach(function (element) {
+      element.disabled = argument;
+    });
   };
 
   /**
@@ -66,5 +66,16 @@
    */
   window.keksobooking.utils.addElementToDomBefore = function (parentClass, elementBeforeClass, newElement) {
     document.querySelector(parentClass).insertBefore(newElement, document.querySelector(elementBeforeClass));
+  };
+
+  /**
+   * Удаление всех пинов, кроме главного с карты
+   */
+  window.keksobooking.utils.deletePinsFromMap = function () {
+    var mapPins = window.keksobooking.utils.findElementAll('.map__pin');
+    // Цикл не с 0 эелмента, а с 1ого, так как нулевой элемент - это самый главный пин, его мы не должны удалять
+    for (var i = 1; i < mapPins.length; i++) {
+      window.keksobooking.utils.removeChildFromDom(mapPins[i]);
+    }
   };
 })();

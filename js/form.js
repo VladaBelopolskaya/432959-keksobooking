@@ -65,11 +65,7 @@
     address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
 
     window.keksobooking.utils.removeChildFromDom(mapCard);
-
-    var mapPins = window.keksobooking.utils.findElementAll('.map__pin');
-    for (var i = 1; i < mapPins.length; i++) {
-      window.keksobooking.utils.removeChildFromDom(mapPins[i]);
-    }
+    window.keksobooking.utils.deletePinsFromMap();
   }
 
   /**
@@ -85,24 +81,24 @@
 
     if (roomNumber.value === '100') {
       capacity.value = '0';
-      for (var i = 0; i < capacityChildren.length; i++) {
-        capacityChildren[i].disabled = true;
-        if (capacityChildren[i].value === '0') {
-          capacityChildren[i].disabled = false;
+      capacityChildren.forEach(function (item) {
+        item.disabled = true;
+        if (item.value === '0') {
+          item.disabled = false;
         }
-      }
+      });
     } else {
-      for (var j = 0; j < capacityChildren.length; j++) {
-        if (capacityChildren[j].value === '0') {
-          capacityChildren[j].disabled = true;
-        } else if (capacityChildren[j].value <= roomNumber.value) {
-          capacityChildren[j].disabled = false;
+      capacityChildren.forEach(function (item) {
+        if (item.value === '0') {
+          item.disabled = true;
+        } else if (item.value <= roomNumber.value) {
+          item.disabled = false;
         } else {
-          capacityChildren[j].disabled = true;
+          item.disabled = true;
         }
-      }
+      });
     }
-  };
+  }
 
   /**
    * Скрытие эементра при нажатии на ESC или произвольную область
@@ -125,7 +121,7 @@
     };
 
     document.addEventListener('keydown', onDocumentKeydown);
-  }
+  };
 
   /**
    * Сброс формы и сообщение об успешной отправке
