@@ -4,7 +4,7 @@
   var HALF_MAIN_PIN_WEIGHT = 32.5;
   var MAIN_PIN_HEIGHT = 75;
   var MAIN_PIN_WEIGHT = 65;
-  var PINS_ARRAY_FROM_BACK = null;
+  window.keksobooking.PINS_ARRAY_FROM_BACK = null;
 
   /**
    * Отображает карточку с подробной информацией
@@ -14,7 +14,7 @@
     var idIndex = +elementId.substr(3);
     var oldCard = window.keksobooking.utils.findElement('.map__card');
     var parent = window.keksobooking.utils.findElement('.map');
-    var newCard = window.keksobooking.createСard(PINS_ARRAY_FROM_BACK[idIndex]);
+    var newCard = window.keksobooking.createСard(window.keksobooking.PINS_ARRAY_FROM_BACK[idIndex]);
     if (oldCard) {
       parent.replaceChild(newCard, oldCard);
     } else {
@@ -35,7 +35,7 @@
   }
 
   /**
-   * Добавляет обработчик на пин
+   * Обработчик, который чекает по какому элементу карты произошел клик и если этот элемент - пин, то он открывает карточку с описанием этого пина
    */
   function onMapMouseup(evt) {
     var element = evt.target;
@@ -52,13 +52,21 @@
    * @param resp
    */
   function successLoad(resp) {
-    PINS_ARRAY_FROM_BACK = resp;
-    var templatePin = window.keksobooking.utils.findElementTemplate('#pin', 'button');
-    var pinElements = window.keksobooking.createPinElements(resp, templatePin);
+    window.keksobooking.PINS_ARRAY_FROM_BACK = resp;
+
+    var pinElements = window.keksobooking.createPinElements(resp);
     window.keksobooking.utils.addChildtoDom('.map__pins', pinElements);
 
-    var newCard = window.keksobooking.createСard(PINS_ARRAY_FROM_BACK[0]);
+    var newCard = window.keksobooking.createСard(window.keksobooking.PINS_ARRAY_FROM_BACK[0]);
     window.keksobooking.utils.addElementToDomBefore('.map', '.map__filters-container', newCard);
+
+    var mapFilter = window.keksobooking.utils.findElementAll('.map__filter');
+    mapFilter.forEach(function (element) {
+      element.disabled = false;
+    });
+
+    var mapFeatures = window.keksobooking.utils.findElement('.map__features');
+    mapFeatures.disabled = false;
   }
 
   /**
@@ -82,6 +90,14 @@
     var map = window.keksobooking.utils.findElement('.map');
     var adForm = window.keksobooking.utils.findElement('.ad-form');
     var mapFilters = window.keksobooking.utils.findElement('.map__filters');
+
+    var mapFilter = window.keksobooking.utils.findElementAll('.map__filter');
+    mapFilter.forEach(function (item) {
+      item.disabled = true;
+    });
+
+    var mapFeatures = window.keksobooking.utils.findElement('.map__features');
+    mapFeatures.disabled = true;
 
     window.keksobooking.loadPins(successLoad, errorLoad);
 
@@ -107,7 +123,6 @@
       x: evt.clientX,
       y: evt.clientY,
     };
-
 
     /**
      * Изменение строки адреса в зависимости от расположения пина
@@ -160,7 +175,6 @@
   var mapPinMain = window.keksobooking.utils.findElement('.map__pin--main');
   var address = window.keksobooking.utils.findElement('#address');
   address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
-
   mapPinMain.addEventListener('mouseup', window.keksobooking.onPinMainMouseup);
   mapPinMain.addEventListener('mousedown', onPinMainMousedown);
 })();
