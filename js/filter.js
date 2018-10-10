@@ -21,15 +21,33 @@
     }
     return rankDiff;
   }
+
   /**
    * Удаление всех пинов с карты (кроме самого главного), сортировка массива пинов в соответсвии со степенью похожести на то, что указано в фильтрах, отрисовываение новых пинов на карту
+   * @param {number} numberOfPinsToRender количество пинов, которые необходимо создать
    */
-  function updatePins() {
+  function updatePins(numberOfPinsToRender) {
     window.keksobooking.utils.deletePinsFromMap();
     var filteredPin = window.keksobooking.PINS_ARRAY_FROM_BACK.sort(comparison);
 
-    var pinElements = window.keksobooking.createPinElements(filteredPin);
+    var pinElements = window.keksobooking.createPinElements(filteredPin, numberOfPinsToRender);
     window.keksobooking.utils.addChildtoDom('.map__pins', pinElements);
+  }
+
+  /**
+   * Узнаем необходимое количество пинов для рендера. Высчитываем ранг каждого пина, для того что бы понять сколько пинов соответсвует фильтрам.
+   * @param {number} numberOfFilters количество используемых фильтров
+   * @return {number} количество пинов для рендера
+   */
+  function howMuchToRender(numberOfFilters) {
+    var numberOfPinsToRender = 0;
+    window.keksobooking.PINS_ARRAY_FROM_BACK.forEach(function (item) {
+      var rankOfItem = getRank(item);
+      if (rankOfItem >= numberOfFilters) {
+        numberOfPinsToRender++;
+      }
+    });
+    return numberOfPinsToRender;
   }
 
   /**
@@ -69,34 +87,64 @@
    * Закрывает карточку с подробной информацией, записывает в переменные значения из фильтров, запускает функцию обновления пинов
    */
   function onChangeValue() {
+    var numberOfFilters = 0;
+
     features = [];
     type = housingType.value;
+    if (type !== 'any') {
+      numberOfFilters += 1;
+    }
+
     price = housingPrice.value;
+    if (price !== 'any') {
+      numberOfFilters += 1;
+    }
+
     rooms = housingRooms.value;
+    if (rooms !== 'any') {
+      numberOfFilters += 1;
+    }
+
     guests = housingGuests.value;
+    if (guests !== 'any') {
+      numberOfFilters += 1;
+    }
 
     if (filterWifi.checked === true) {
       features.push(filterWifi.value);
+      numberOfFilters += 1;
     }
     if (filterDishwasher.checked === true) {
       features.push(filterDishwasher.value);
+      numberOfFilters += 1;
     }
     if (filterParking.checked === true) {
       features.push(filterParking.value);
+      numberOfFilters += 1;
     }
     if (filterWasher.checked === true) {
       features.push(filterWasher.value);
+      numberOfFilters += 1;
     }
     if (filterElevator.checked === true) {
       features.push(filterElevator.value);
+      numberOfFilters += 1;
     }
     if (filterConditioner.checked === true) {
       features.push(filterConditioner.value);
+      numberOfFilters += 1;
     }
 
-    updatePins();
+    var numberOfPinsToRender = howMuchToRender(numberOfFilters);
+    updatePins(numberOfPinsToRender);
+    window.keksobooking.onButtonCloseMouseup();
   }
 
+  /**
+   * Задержка выполения функции
+   * @param {Function} fun функция, которая будет выполнена по истечению определенного времени
+   * @return {Function}
+   */
   function debounce(fun) {
     var lastTimeout = null;
 

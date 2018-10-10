@@ -1,5 +1,7 @@
-'use strict'
+'use strict';
 
-window.keksobooking = {};
-window.keksobooking.utils = {};
+(function () {
+  window.keksobooking = {};
+  window.keksobooking.utils = {};
+})();
 

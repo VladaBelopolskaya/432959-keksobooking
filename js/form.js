@@ -81,46 +81,23 @@
 
     if (roomNumber.value === '100') {
       capacity.value = '0';
-      capacityChildren.forEach(function (item) {
-        item.disabled = true;
-        if (item.value === '0') {
-          item.disabled = false;
+      for (var i = 0; i < capacityChildren.length; i++) {
+        capacityChildren[i].disabled = true;
+        if (capacityChildren[i].value === '0') {
+          capacityChildren[i].disabled = false;
         }
-      });
-    } else {
-      capacityChildren.forEach(function (item) {
-        if (item.value === '0') {
-          item.disabled = true;
-        } else if (item.value <= roomNumber.value) {
-          item.disabled = false;
-        } else {
-          item.disabled = true;
-        }
-      });
-    }
-  }
-
-  /**
-   * Скрытие эементра при нажатии на ESC или произвольную область
-   * @param {Element} element на который нужно навесить обработчик
-   */
-  window.keksobooking.listnerClosePopup = function (element) {
-    element.addEventListener('mouseup', function () {
-      window.keksobooking.utils.removeChildFromDom(element);
-    });
-
-    /**
-     * Закрытие попапа при нажатии на кнопку ESC
-     * @param evnt
-     */
-    function onDocumentKeydown(evnt) {
-      if (evnt.keyCode === 27) {
-        window.keksobooking.utils.removeChildFromDom(element);
       }
-      document.removeEventListener('keydown', onDocumentKeydown);
-    };
-
-    document.addEventListener('keydown', onDocumentKeydown);
+    } else {
+      for (var j = 0; j < capacityChildren.length; j++) {
+        if (capacityChildren[j].value === '0') {
+          capacityChildren[j].disabled = true;
+        } else if (capacityChildren[j].value <= roomNumber.value) {
+          capacityChildren[j].disabled = false;
+        } else {
+          capacityChildren[j].disabled = true;
+        }
+      }
+    }
   };
 
   /**
@@ -147,8 +124,7 @@
   };
 
   /**
-   * Сброс страницы, сообщение об успешной отвравке данных, обработчик закрытия сообщения
-   * @param evt
+   * Отправка данных на сервер
    */
   function onFormSubmit(evt) {
     window.keksobooking.upload(new FormData(adForm), upLoadSuccess, upLoadError);

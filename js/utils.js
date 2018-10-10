@@ -78,4 +78,26 @@
       window.keksobooking.utils.removeChildFromDom(mapPins[i]);
     }
   };
+
+  /**
+   * Скрытие модального окна (ошибка / успешная загрузка) при нажатии на ESC или произвольную область
+   * @param {Element} element на который нужно навесить обработчик
+   */
+  window.keksobooking.listnerClosePopup = function (element) {
+    element.addEventListener('mouseup', function () {
+      window.keksobooking.utils.removeChildFromDom(element);
+    });
+
+    /**
+     * Закрытие при нажатии на кнопку ESC
+     */
+    function onDocumentKeydown(evnt) {
+      if (evnt.keyCode === 27) {
+        window.keksobooking.utils.removeChildFromDom(element);
+      }
+      document.removeEventListener('keydown', onDocumentKeydown);
+    };
+
+    document.addEventListener('keydown', onDocumentKeydown);
+  };
 })();

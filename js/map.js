@@ -7,7 +7,7 @@
   window.keksobooking.PINS_ARRAY_FROM_BACK = null;
 
   /**
-   * Отображает карточку с подробной информацией
+   * Отображает карточку с подробной информацией соответсвующего пина
    */
   function onPinMouseup(element) {
     var elementId = element.id;
@@ -21,21 +21,45 @@
       window.keksobooking.utils.addElementToDomBefore('.map', '.map__filters-container', newCard);
     }
 
-    var buttonClose = window.keksobooking.utils.findElement('.popup__close');
-    buttonClose.addEventListener('mouseup', onButtonCloseMouseup);
+    listnerToCard();
   }
 
   /**
-   * Закрывает попап
+   * Навешивает обработчики на карточку с подробной информацией (закрытие при нажатии на клавишу ESC и при нажатии на крестик)
    */
-  function onButtonCloseMouseup() {
+  function listnerToCard() {
+    var buttonClose = window.keksobooking.utils.findElement('.popup__close');
+    buttonClose.addEventListener('mouseup', window.keksobooking.onButtonCloseMouseup);
+    buttonClose.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === 13) {
+        window.keksobooking.onButtonCloseMouseup();
+      }
+    });
+
+    /**
+     * Закрытие попапа при нажатии на кнопку ESC
+     */
+    function onDocumentKeydown(evnt) {
+      if (evnt.keyCode === 27) {
+        window.keksobooking.onButtonCloseMouseup();
+      }
+      document.removeEventListener('keydown', onDocumentKeydown);
+    };
+
+    document.addEventListener('keydown', onDocumentKeydown);
+  }
+
+  /**
+   * Удаление карточки с подробной информацией из DOM
+   */
+  window.keksobooking.onButtonCloseMouseup = function () {
     var card = window.keksobooking.utils.findElement('.map__card');
     var parent = window.keksobooking.utils.findElement('.map');
     parent.removeChild(card);
   }
 
   /**
-   * Обработчик, который чекает по какому элементу карты произошел клик и если этот элемент - пин, то он открывает карточку с описанием этого пина
+   * Обработчик, который чекает по какому элементу карты произошел клик и если этот элемент - пин, то запускает функцию для открытия карточки с описанием этого пина
    */
   function onMapMouseup(evt) {
     var element = evt.target;
@@ -48,17 +72,18 @@
   }
 
   /**
-   * Успешная загрузка
-   * @param resp
+   * Успешная загрузка, вызов функций по созданию, добавлению в DOM пинов; созданию, добавлению в DOM карточки с описанием; разблокировние поля с фильтрами
+   * @param {elements} resp данные с сервера
    */
   function successLoad(resp) {
     window.keksobooking.PINS_ARRAY_FROM_BACK = resp;
 
-    var pinElements = window.keksobooking.createPinElements(resp);
+    var pinElements = window.keksobooking.createPinElements(resp, window.keksobooking.NUMBER_OF_PINS_ON_THE_MAP);
     window.keksobooking.utils.addChildtoDom('.map__pins', pinElements);
 
     var newCard = window.keksobooking.createСard(window.keksobooking.PINS_ARRAY_FROM_BACK[0]);
     window.keksobooking.utils.addElementToDomBefore('.map', '.map__filters-container', newCard);
+    listnerToCard();
 
     var mapFilter = window.keksobooking.utils.findElementAll('.map__filter');
     mapFilter.forEach(function (element) {
@@ -83,7 +108,7 @@
   }
 
   /**
-   * Активирует карту, форму и фильтры, загружает и добавляет пины в DOM, навешивает обрабочики на пины
+   * Активирует карту, форму и фильтры, запускает функцию загрузки данных с сервера, навешивает обрабочик на карту
    */
   window.keksobooking.onPinMainMouseup = function () {
 
@@ -105,7 +130,7 @@
     adForm.classList.remove('ad-form--disabled');
     window.keksobooking.utils.noticeDisabled(false);
     mapFilters.classList.remove('ad-form--disabled');
-    map.addEventListener('mouseup', onMapMouseup)
+    map.addEventListener('mouseup', onMapMouseup);
     mapPinMain.removeEventListener('mouseup', window.keksobooking.onPinMainMouseup);
   };
 
