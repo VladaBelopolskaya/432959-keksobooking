@@ -10,7 +10,9 @@
    */
   window.keksobooking.createPinElements = function (pins, numberOfPinsToRender) {
     var number = window.keksobooking.NUMBER_OF_PINS_ON_THE_MAP;
-    if (numberOfPinsToRender < number) { number = numberOfPinsToRender; }
+    if (numberOfPinsToRender < number) {
+      number = numberOfPinsToRender;
+    }
     var templatePin = window.keksobooking.utils.findElementTemplate('#pin', 'button');
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < number; i++) {

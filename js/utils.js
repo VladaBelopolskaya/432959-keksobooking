@@ -90,13 +90,14 @@
 
     /**
      * Закрытие при нажатии на кнопку ESC
+     * @param {event} evnt
      */
     function onDocumentKeydown(evnt) {
       if (evnt.keyCode === 27) {
         window.keksobooking.utils.removeChildFromDom(element);
       }
       document.removeEventListener('keydown', onDocumentKeydown);
-    };
+    }
 
     document.addEventListener('keydown', onDocumentKeydown);
   };

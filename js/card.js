@@ -22,7 +22,7 @@
 
     var features = arrayElement.offer.features;
 
-    //Поиск признаков, которых нет в объявлении, чтобы в последующем удалить их из разметки
+    // Поиск признаков, которых нет в объявлении, чтобы в последующем удалить их из разметки
     var deleteFeatures = PIN_FEATURES.filter(function (itemAllFeatures) {
       return features.indexOf(itemAllFeatures) === -1;
     });
@@ -55,7 +55,7 @@
 
 
     var fragmentPhoto = document.createDocumentFragment();
-    //Используется цикл до length - 1, так как в исходной разметке template уже есть один элемент с классом "popup__photo"
+    // Используется цикл до length - 1, так как в исходной разметке template уже есть один элемент с классом "popup__photo"
     for (var i = 0; i < arrayElement.offer.photos.length - 1; i++) {
       var newPhoto = newElementCard.querySelector('.popup__photos > .popup__photo').cloneNode(true);
       fragmentPhoto.appendChild(newPhoto);

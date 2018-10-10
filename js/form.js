@@ -101,7 +101,7 @@
         }
       }
     }
-  };
+  }
 
   /**
    * Сброс формы и сообщение об успешной отправке
@@ -113,7 +113,7 @@
     var newElement = templateSuccess.cloneNode(true);
     document.body.insertAdjacentElement('afterbegin', newElement);
     window.keksobooking.listnerClosePopup(newElement);
-  };
+  }
 
   /**
    * Сообщение об ошибке
@@ -124,10 +124,11 @@
     document.body.insertAdjacentElement('afterbegin', newElement);
 
     window.keksobooking.listnerClosePopup(newElement);
-  };
+  }
 
   /**
    * Сброс отправки формы по нажатию на Enter
+   * @param {event} evt
    */
   function onFormSubmit(evt) {
     evt.preventDefault();
@@ -144,6 +145,7 @@
 
   /**
    * Проверка валидации формы
+   * @return {boolean} прошла ли валидацию форма
    */
   function isValidation() {
     var validationPrice = false;
@@ -162,18 +164,18 @@
     }
     return validationTitle && validationPrice;
   }
-
   /**
    * Сброс формы при нажатии клавиши Enter
+   * @param {event} evt
    */
   function onResetButtonKeyDown(evt) {
     if (evt.keyCode === 13) {
       onResetButtonMouseup();
     }
   }
-
   /**
    * Отправка формы при нажатии клавиши Enter
+   * @param {event} evt
    */
   function onSubmitButtonKeyDown(evt) {
     if (evt.keyCode === 13) {

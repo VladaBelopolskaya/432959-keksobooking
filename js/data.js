@@ -74,7 +74,7 @@
       pins.push(data);
     }
     return pins;
-  };
+  }
 
   var widthMapPins = document.querySelector('.map__pins').offsetWidth; // Ширина окна
   var pins = createArrayPins(widthMapPins);

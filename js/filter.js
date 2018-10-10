@@ -58,19 +58,31 @@
   function getRank(pin) {
     var rank = 0;
 
-    if (pin.offer.type === type) { rank += 1; }
-    if (pin.offer.rooms === rooms) { rank += 1; }
-    if (pin.offer.guests === guests) { rank += 1; }
+    if (pin.offer.type === type) {
+      rank += 1;
+    }
+    if (pin.offer.rooms === rooms) {
+      rank += 1;
+    }
+    if (pin.offer.guests === guests) {
+      rank += 1;
+    }
 
     switch (price) {
       case 'high':
-        if (pin.offer.price > 50000) { rank += 1; }
+        if (pin.offer.price > 50000) {
+          rank += 1;
+        }
         break;
       case 'low':
-        if (pin.offer.price < 10000) { rank += 1; }
+        if (pin.offer.price < 10000) {
+          rank += 1;
+        }
         break;
       case 'middle':
-        if (pin.offer.price >= 10000 && pin.offer.price <= 50000) { rank += 1; }
+        if (pin.offer.price >= 10000 && pin.offer.price <= 50000) {
+          rank += 1;
+        }
         break;
     }
 
