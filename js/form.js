@@ -19,6 +19,8 @@
       placeholder: 10000,
     },
   };
+  var MIN_LENGTH_TITLE = 30;
+  var MAX_LENGTH_TITLE = 100;
 
   /**
    * Изменяет минимальное значение и placeholder в зависимости от типа жилья
@@ -53,6 +55,7 @@
     var mapFilters = window.keksobooking.utils.findElement('.map__filters');
     var mapPinMain = window.keksobooking.utils.findElement('.map__pin--main');
     mapPinMain.addEventListener('mouseup', window.keksobooking.onPinMainMouseup);
+    document.addEventListener('keydown', window.keksobooking.onMainPinPressEnter);
     var address = window.keksobooking.utils.findElement('#address');
     var mapCard = window.keksobooking.utils.findElement('.map__card');
 
@@ -124,11 +127,58 @@
   };
 
   /**
-   * Отправка данных на сервер
+   * Сброс отправки формы по нажатию на Enter
    */
   function onFormSubmit(evt) {
-    window.keksobooking.upload(new FormData(adForm), upLoadSuccess, upLoadError);
     evt.preventDefault();
+  }
+
+  /**
+   * Отправка данных на сервер
+   */
+  function onSubmitMouseup() {
+    if (isValidation()) {
+      window.keksobooking.upload(new FormData(adForm), upLoadSuccess, upLoadError);
+    }
+  }
+
+  /**
+   * Проверка валидации формы
+   */
+  function isValidation() {
+    var validationPrice = false;
+    var validationTitle = false;
+    var priceOfHousing = window.keksobooking.utils.findElement('#price');
+    var titleOfHousing = window.keksobooking.utils.findElement('#title');
+    if (+priceOfHousing.value < +priceOfHousing.min || +priceOfHousing.value > +priceOfHousing.max) {
+      validationPrice = false;
+    } else {
+      validationPrice = true;
+    }
+    if (titleOfHousing.value.length < MIN_LENGTH_TITLE || titleOfHousing.value.length > MAX_LENGTH_TITLE) {
+      validationTitle = false;
+    } else {
+      validationTitle = true;
+    }
+    return validationTitle && validationPrice;
+  }
+
+  /**
+   * Сброс формы при нажатии клавиши Enter
+   */
+  function onResetButtonKeyDown(evt) {
+    if (evt.keyCode === 13) {
+      onResetButtonMouseup();
+    }
+  }
+
+  /**
+   * Отправка формы при нажатии клавиши Enter
+   */
+  function onSubmitButtonKeyDown(evt) {
+    if (evt.keyCode === 13) {
+      onSubmitMouseup();
+    }
   }
 
   var typeOfHousing = window.keksobooking.utils.findElement('#type');
@@ -139,8 +189,23 @@
   timeOut.addEventListener('change', onSelectTimeOutChange);
   var resetButton = window.keksobooking.utils.findElement('.ad-form__reset');
   resetButton.addEventListener('mouseup', onResetButtonMouseup);
+  resetButton.addEventListener('keydown', onResetButtonKeyDown);
   var adForm = window.keksobooking.utils.findElement('.ad-form');
   adForm.addEventListener('submit', onFormSubmit);
   var roomNumber = window.keksobooking.utils.findElement('#room_number');
   roomNumber.addEventListener('change', onRoomNumberChange);
+  var buttonSubmit = window.keksobooking.utils.findElement('.ad-form__submit');
+  buttonSubmit.addEventListener('mouseup', onSubmitMouseup);
+  buttonSubmit.addEventListener('keydown', onSubmitButtonKeyDown);
+
+  var arrayOfCheckbox = ['#feature-wifi', '#feature-dishwasher', '#feature-parking', '#feature-washer', '#feature-elevator', '#feature-conditioner'];
+  arrayOfCheckbox.forEach(function (item) {
+    var element = window.keksobooking.utils.findElement(item);
+    element.addEventListener('keydown', onFeaturesPressEnter);
+    function onFeaturesPressEnter(evt) {
+      if (evt.keyCode === 13) {
+        element.checked = !element.checked;
+      }
+    }
+  });
 })();

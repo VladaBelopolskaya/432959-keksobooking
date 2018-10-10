@@ -35,9 +35,9 @@
   }
 
   /**
-   * Узнаем необходимое количество пинов для рендера. Высчитываем ранг каждого пина, для того что бы понять сколько пинов соответсвует фильтрам.
+   * Высчитываем ранг каждого пина, для того что бы понять сколько пинов соответсвует фильтрам.
    * @param {number} numberOfFilters количество используемых фильтров
-   * @return {number} количество пинов для рендера
+   * @return {number} количество пинов соответсвующих фильтрам
    */
   function howMuchToRender(numberOfFilters) {
     var numberOfPinsToRender = 0;
@@ -156,6 +156,7 @@
     };
   }
 
+
   var housingType = window.keksobooking.utils.findElement('#housing-type');
   var housingPrice = window.keksobooking.utils.findElement('#housing-price');
   var housingRooms = window.keksobooking.utils.findElement('#housing-rooms');
@@ -166,8 +167,25 @@
   var filterWasher = window.keksobooking.utils.findElement('#filter-washer');
   var filterElevator = window.keksobooking.utils.findElement('#filter-elevator');
   var filterConditioner = window.keksobooking.utils.findElement('#filter-conditioner');
-  var arrayOfID = ['#housing-type', '#housing-price', '#housing-rooms', '#housing-guests', '#housing-features', '#filter-wifi', '#filter-dishwasher', '#filter-parking', '#filter-washer', '#filter-elevator', '#filter-conditioner'];
-  arrayOfID.forEach(function (item) {
-    window.keksobooking.utils.findElement(item).addEventListener('change', debounce(onChangeValue));
+
+  var arrayOfSelect = ['#housing-type', '#housing-price', '#housing-rooms', '#housing-guests'];
+  arrayOfSelect.forEach(function (item) {
+    var element = window.keksobooking.utils.findElement(item);
+    element.addEventListener('change', debounce(onChangeValue));
   });
+
+  var arrayOfCheckbox = ['#filter-wifi', '#filter-dishwasher', '#filter-parking', '#filter-washer', '#filter-elevator', '#filter-conditioner'];
+  arrayOfCheckbox.forEach(function (item) {
+    var element = window.keksobooking.utils.findElement(item);
+    element.addEventListener('change', debounce(onChangeValue));
+    element.addEventListener('keydown', onFeaturesPressEnter);
+
+    function onFeaturesPressEnter(evt) {
+      if (evt.keyCode === 13) {
+        element.checked = !element.checked;
+        debounce(onChangeValue)();
+      }
+    }
+  });
+
 })();

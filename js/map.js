@@ -55,7 +55,9 @@
   window.keksobooking.onButtonCloseMouseup = function () {
     var card = window.keksobooking.utils.findElement('.map__card');
     var parent = window.keksobooking.utils.findElement('.map');
-    parent.removeChild(card);
+    if (card) {
+      parent.removeChild(card);
+    }
   }
 
   /**
@@ -68,6 +70,34 @@
     }
     if (element.className === 'map__img-pin') {
       onPinMouseup(element.parentNode);
+    }
+  }
+
+  /**
+   * Обрабтчик нажатия Enter, на выбраном пине
+   */
+  function onMapPressEnter(evt) {
+    if (evt.keyCode === 13) {
+      if (document.activeElement) {
+        var element = document.activeElement;
+        if (element.className === 'map__pin' && element.className !== 'map__pin--main') {
+          onPinMouseup(element);
+        }
+      }
+    }
+  }
+
+  /**
+   * Обработчик нажатия Enter на главном пине
+   */
+  window.keksobooking.onMainPinPressEnter = function (evt) {
+    if (evt.keyCode === 13) {
+      if (document.activeElement) {
+        var element = document.activeElement;
+        if (element.className === 'map__pin map__pin--main') {
+          window.keksobooking.onPinMainMouseup();
+        }
+      }
     }
   }
 
@@ -131,7 +161,9 @@
     window.keksobooking.utils.noticeDisabled(false);
     mapFilters.classList.remove('ad-form--disabled');
     map.addEventListener('mouseup', onMapMouseup);
+    map.addEventListener('keydown', onMapPressEnter);
     mapPinMain.removeEventListener('mouseup', window.keksobooking.onPinMainMouseup);
+    document.removeEventListener('keydown', window.keksobooking.onMainPinPressEnter);
   };
 
   /**
@@ -201,5 +233,6 @@
   var address = window.keksobooking.utils.findElement('#address');
   address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
   mapPinMain.addEventListener('mouseup', window.keksobooking.onPinMainMouseup);
+  document.addEventListener('keydown', window.keksobooking.onMainPinPressEnter);
   mapPinMain.addEventListener('mousedown', onPinMainMousedown);
 })();
