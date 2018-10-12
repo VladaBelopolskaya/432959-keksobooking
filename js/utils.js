@@ -93,7 +93,7 @@
      * @param {event} evnt
      */
     function onDocumentKeydown(evnt) {
-      if (evnt.keyCode === 27) {
+      if (evnt.keyCode === window.keksobooking.ESC_CODE) {
         window.keksobooking.utils.removeChildFromDom(element);
       }
       document.removeEventListener('keydown', onDocumentKeydown);
@@ -101,4 +101,17 @@
 
     document.addEventListener('keydown', onDocumentKeydown);
   };
+
+  /**
+   * Не успешная загрузка
+   * @param {text} message текст ошибки
+   */
+  window.keksobooking.utils.errorLoad = function (message) {
+    var templateError = window.keksobooking.utils.findElementTemplate('#error', 'div');
+    var newElement = templateError.cloneNode(true);
+    newElement.children[0].textContent = message;
+    document.body.insertAdjacentElement('afterbegin', newElement);
+
+    window.keksobooking.listnerClosePopup(newElement);
+  }
 })();

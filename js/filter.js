@@ -7,6 +7,8 @@
   var guests = '';
   var features = [];
   var DEBOUNCE_INTERVAL = 500;
+  var LOW_PRICE = 10000;
+  var HIGH_PRICE = 50000;
 
   /**
    * Определяет порядок сортировки, если ранг следующего элемента больше предыдущего, то элементы меняются местами. Если ранги элементов равны, то они сортируются в соответсвии их вхождения в исходном массиве
@@ -70,17 +72,17 @@
 
     switch (price) {
       case 'high':
-        if (pin.offer.price > 50000) {
+        if (pin.offer.price > HIGH_PRICE) {
           rank += 1;
         }
         break;
       case 'low':
-        if (pin.offer.price < 10000) {
+        if (pin.offer.price < LOW_PRICE) {
           rank += 1;
         }
         break;
       case 'middle':
-        if (pin.offer.price >= 10000 && pin.offer.price <= 50000) {
+        if (pin.offer.price >= LOW_PRICE && pin.offer.price <= HIGH_PRICE) {
           rank += 1;
         }
         break;
@@ -115,11 +117,13 @@
     rooms = housingRooms.value;
     if (rooms !== 'any') {
       numberOfFilters += 1;
+      rooms = +rooms;
     }
 
     guests = housingGuests.value;
     if (guests !== 'any') {
       numberOfFilters += 1;
+      guests = +guests;
     }
 
     if (filterWifi.checked === true) {
@@ -193,7 +197,7 @@
     element.addEventListener('keydown', onFeaturesPressEnter);
 
     function onFeaturesPressEnter(evt) {
-      if (evt.keyCode === 13) {
+      if (evt.keyCode === window.keksobooking.ENTER_CODE) {
         element.checked = !element.checked;
         debounce(onChangeValue)();
       }

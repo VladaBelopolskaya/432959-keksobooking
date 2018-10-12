@@ -5,6 +5,8 @@
   var MAIN_PIN_HEIGHT = 75;
   var MAIN_PIN_WEIGHT = 65;
   window.keksobooking.PINS_ARRAY_FROM_BACK = null;
+  window.keksobooking.ENTER_CODE = 13;
+  window.keksobooking.ESC_CODE = 27;
   /**
    * Отображает карточку с подробной информацией соответсвующего пина
    * @param {Element} element пин, который необходимо отрисовать
@@ -31,7 +33,7 @@
     var buttonClose = window.keksobooking.utils.findElement('.popup__close');
     buttonClose.addEventListener('mouseup', window.keksobooking.onButtonCloseMouseup);
     buttonClose.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === 13) {
+      if (evt.keyCode === window.keksobooking.ENTER_CODE) {
         window.keksobooking.onButtonCloseMouseup();
       }
     });
@@ -40,7 +42,7 @@
      * @param {event} evnt
      */
     function onDocumentKeydown(evnt) {
-      if (evnt.keyCode === 27) {
+      if (evnt.keyCode === window.keksobooking.ESC_CODE) {
         window.keksobooking.onButtonCloseMouseup();
       }
       document.removeEventListener('keydown', onDocumentKeydown);
@@ -78,7 +80,7 @@
    * @param {event} evt
    */
   function onMapPressEnter(evt) {
-    if (evt.keyCode === 13) {
+    if (evt.keyCode === window.keksobooking.ENTER_CODE) {
       if (document.activeElement) {
         var element = document.activeElement;
         if (element.className === 'map__pin' && element.className !== 'map__pin--main') {
@@ -92,7 +94,7 @@
    * @param {event} evt
    */
   window.keksobooking.onMainPinPressEnter = function (evt) {
-    if (evt.keyCode === 13) {
+    if (evt.keyCode === window.keksobooking.ENTER_CODE) {
       if (document.activeElement) {
         var element = document.activeElement;
         if (element.className === 'map__pin map__pin--main') {
@@ -126,19 +128,6 @@
   }
 
   /**
-   * Не успешная загрузка
-   * @param {text} message текст ошибки
-   */
-  function errorLoad(message) {
-    var templateError = window.keksobooking.utils.findElementTemplate('#error', 'div');
-    var newElement = templateError.cloneNode(true);
-    newElement.children[0].textContent = message;
-    document.body.insertAdjacentElement('afterbegin', newElement);
-
-    window.keksobooking.listnerClosePopup(newElement);
-  }
-
-  /**
    * Активирует карту, форму и фильтры, запускает функцию загрузки данных с сервера, навешивает обрабочик на карту
    */
   window.keksobooking.onPinMainMouseup = function () {
@@ -155,7 +144,7 @@
     var mapFeatures = window.keksobooking.utils.findElement('.map__features');
     mapFeatures.disabled = true;
 
-    window.keksobooking.loadPins(successLoad, errorLoad);
+    window.keksobooking.loadPins(successLoad, window.keksobooking.utils.errorLoad);
 
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');

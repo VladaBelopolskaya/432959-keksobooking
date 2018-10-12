@@ -116,17 +116,6 @@
   }
 
   /**
-   * Сообщение об ошибке
-   */
-  function upLoadError() {
-    var templateError = window.keksobooking.utils.findElementTemplate('#error', 'div');
-    var newElement = templateError.cloneNode(true);
-    document.body.insertAdjacentElement('afterbegin', newElement);
-
-    window.keksobooking.listnerClosePopup(newElement);
-  }
-
-  /**
    * Сброс отправки формы по нажатию на Enter
    * @param {event} evt
    */
@@ -139,7 +128,7 @@
    */
   function onSubmitMouseup() {
     if (isValidation()) {
-      window.keksobooking.upload(new FormData(adForm), upLoadSuccess, upLoadError);
+      window.keksobooking.upload(new FormData(adForm), upLoadSuccess, window.keksobooking.utils.errorLoad);
     }
   }
 
@@ -169,7 +158,7 @@
    * @param {event} evt
    */
   function onResetButtonKeyDown(evt) {
-    if (evt.keyCode === 13) {
+    if (evt.keyCode === window.keksobooking.ENTER_CODE) {
       onResetButtonMouseup();
     }
   }
@@ -178,7 +167,7 @@
    * @param {event} evt
    */
   function onSubmitButtonKeyDown(evt) {
-    if (evt.keyCode === 13) {
+    if (evt.keyCode === window.keksobooking.ENTER_CODE) {
       onSubmitMouseup();
     }
   }
@@ -205,7 +194,7 @@
     var element = window.keksobooking.utils.findElement(item);
     element.addEventListener('keydown', onFeaturesPressEnter);
     function onFeaturesPressEnter(evt) {
-      if (evt.keyCode === 13) {
+      if (evt.keyCode === window.keksobooking.ENTER_CODE) {
         element.checked = !element.checked;
       }
     }

@@ -15,6 +15,7 @@
   var PIN_HEIGHT = 70;
   var PIN_WEIGHT = 50;
   var HALF_PIN_WEIGHT = 25;
+  var NUMBERS_OF_PINS = 8;
 
   /**
    * Выбор случайного числа между максимальным и минимальным
@@ -43,7 +44,7 @@
    */
   function createArrayPins(widthMap) {
     var pins = [];
-    for (var i = 0; i < 8; i++) {
+    for (var i = 0; i < NUMBERS_OF_PINS; i++) {
       var number = i + 1;
       var locatoinX = randomInteger(0, widthMap - PIN_WEIGHT) + HALF_PIN_WEIGHT;
       var locationY = randomInteger(MIN_VERTICAL_COORDINATE + PIN_HEIGHT, MAX_VERTICAL_COORDINATE - PIN_HEIGHT) + PIN_HEIGHT;

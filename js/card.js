@@ -5,14 +5,14 @@
   /**
    * Создание и заполнение карточкии
    * @param {Element} arrayElement элемант массива, на основе которого надо сделать карточку
-   * @return {Element} карточка, описывающая соответсвующий пин
+   * @return {Node} карточка, описывающая соответсвующий пин
    */
   window.keksobooking.createСard = function (arrayElement) {
     var templateCard = window.keksobooking.utils.findElementTemplate('#card', 'article');
     var newElementCard = templateCard.cloneNode(true);
     var typeOfferEng = arrayElement.offer.type;
     var numberOfRooms = arrayElement.offer.rooms;
-    var declination = '';
+    var wordForm = '';
     var typeOfferRus = {
       'flat': 'Квартира',
       'bungalo': 'Бунгало',
@@ -31,42 +31,37 @@
       newElementCard.querySelector('.popup__features > .popup__feature--' + item).remove();
     });
 
-    switch (numberOfRooms % 10) {
-      case 1:
-        declination = 'комната';
-        break;
-      case 2:
-      case 3:
-      case 4:
-        declination = 'комнаты';
-        break;
-      default:
-        declination = 'комнат';
+    if (numberOfRooms % 10 === 1) {
+      wordForm = 'комната';
+    } else if (numberOfRooms % 10 === 2 || numberOfRooms % 10 === 3 || numberOfRooms % 10 === 4) {
+      wordForm = 'комнаты';
+    } else {
+      wordForm = 'комнат';
     }
 
     newElementCard.querySelector('.popup__title').textContent = arrayElement.offer.title;
     newElementCard.querySelector('.popup__text--address').textContent = arrayElement.offer.addres;
     newElementCard.querySelector('.popup__text--price').textContent = arrayElement.offer.price + '₽/ночь';
     newElementCard.querySelector('.popup__type').textContent = typeOfferRus[typeOfferEng];
-    newElementCard.querySelector('.popup__text--capacity').textContent = arrayElement.offer.rooms + ' ' + declination + ' для ' + arrayElement.offer.guests + ' гостей';
+    newElementCard.querySelector('.popup__text--capacity').textContent = arrayElement.offer.rooms + ' ' + wordForm + ' для ' + arrayElement.offer.guests + ' гостей';
     newElementCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + arrayElement.offer.checkin + ' выезд до ' + arrayElement.offer.checkout;
     newElementCard.querySelector('.popup__description').textContent = arrayElement.offer.description;
     newElementCard.querySelector('.popup__avatar').src = arrayElement.author.avatar;
 
-
-    var fragmentPhoto = document.createDocumentFragment();
-    // Используется цикл до length - 1, так как в исходной разметке template уже есть один элемент с классом "popup__photo"
-    for (var i = 0; i < arrayElement.offer.photos.length - 1; i++) {
-      var newPhoto = newElementCard.querySelector('.popup__photos > .popup__photo').cloneNode(true);
-      fragmentPhoto.appendChild(newPhoto);
+    if (arrayElement.offer.photos.length !== 0) {
+      newElementCard.querySelector('.popup__photos > .popup__photo').src = arrayElement.offer.photos[0];
+      if (arrayElement.offer.photos.length > 1) {
+        var fragmentPhoto = document.createDocumentFragment();
+        for (var i = 1; i < arrayElement.offer.photos.length; i++) {
+          var newPhoto = newElementCard.querySelector('.popup__photos > .popup__photo').cloneNode(true);
+          newPhoto.src = arrayElement.offer.photos[i];
+          fragmentPhoto.appendChild(newPhoto);
+        }
+        newElementCard.querySelector('.popup__photos').appendChild(fragmentPhoto);
+      }
+    } else {
+      newElementCard.querySelector('.popup__photos').remove();
     }
-    newElementCard.querySelector('.popup__photos').appendChild(fragmentPhoto);
-
-    var arrayPhotos = newElementCard.querySelectorAll('.popup__photos > .popup__photo');
-    arrayPhotos.forEach(function (item, j) {
-      item.src = arrayElement.offer.photos[j];
-    });
-
     return newElementCard;
   };
 })();
