@@ -113,5 +113,5 @@
     document.body.insertAdjacentElement('afterbegin', newElement);
 
     window.keksobooking.listnerClosePopup(newElement);
-  }
+  };
 })();
