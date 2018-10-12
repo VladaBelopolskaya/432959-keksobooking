@@ -4,6 +4,8 @@
   var HALF_MAIN_PIN_WEIGHT = 32.5;
   var MAIN_PIN_HEIGHT = 75;
   var MAIN_PIN_WEIGHT = 65;
+  var MIN_VERTICAL_COORDINATE = 130;
+  var MAX_VERTICAL_COORDINATE = 630;
   window.keksobooking.PINS_ARRAY_FROM_BACK = null;
   window.keksobooking.ENTER_CODE = 13;
   window.keksobooking.ESC_CODE = 27;
@@ -186,10 +188,10 @@
         y: moveEvt.clientY,
       };
 
-      if (mapPinMain.offsetTop - shift.y > window.data.MAX_VERTICAL_COORDINATE) {
-        mapPinMain.style.top = window.data.MAX_VERTICAL_COORDINATE + 'px';
-      } else if (mapPinMain.offsetTop - shift.y < window.data.MIN_VERTICAL_COORDINATE) {
-        mapPinMain.style.top = window.data.MIN_VERTICAL_COORDINATE + 'px';
+      if (mapPinMain.offsetTop - shift.y > MAX_VERTICAL_COORDINATE) {
+        mapPinMain.style.top = MAX_VERTICAL_COORDINATE + 'px';
+      } else if (mapPinMain.offsetTop - shift.y < MIN_VERTICAL_COORDINATE) {
+        mapPinMain.style.top = MIN_VERTICAL_COORDINATE + 'px';
       } else {
         mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
       }
