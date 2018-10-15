@@ -2,6 +2,23 @@
 
 (function () {
   var PIN_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+
+  /**
+   * Создание блока с фотографиями и заполнение их src
+   * @param {array} array массив src для фотографий
+   * @param {Node} nodeForClone элемент, на основе которого будут созаваться блоки с фотографиями
+   * @return {DocumentFragment} фрагмент с готовыми фотографиями для последующей отрисовки в доме
+   */
+  function createPhotos(array, nodeForClone) {
+    var fragmentPhoto = document.createDocumentFragment();
+    array.forEach(function (item) {
+      var newPhoto = nodeForClone.cloneNode(true);
+      newPhoto.src = item;
+      fragmentPhoto.appendChild(newPhoto);
+    });
+    return fragmentPhoto;
+  }
+
   /**
    * Создание и заполнение карточкии
    * @param {Element} arrayElement элемант массива, на основе которого надо сделать карточку
@@ -17,7 +34,7 @@
       'flat': 'Квартира',
       'bungalo': 'Бунгало',
       'house': 'Дом',
-      'palace': 'Дворец'
+      'palace': 'Дворец',
     };
 
     var features = arrayElement.offer.features;
@@ -48,20 +65,11 @@
     newElementCard.querySelector('.popup__description').textContent = arrayElement.offer.description;
     newElementCard.querySelector('.popup__avatar').src = arrayElement.author.avatar;
 
-    if (arrayElement.offer.photos.length !== 0) {
-      newElementCard.querySelector('.popup__photos > .popup__photo').src = arrayElement.offer.photos[0];
-      if (arrayElement.offer.photos.length > 1) {
-        var fragmentPhoto = document.createDocumentFragment();
-        for (var i = 1; i < arrayElement.offer.photos.length; i++) {
-          var newPhoto = newElementCard.querySelector('.popup__photos > .popup__photo').cloneNode(true);
-          newPhoto.src = arrayElement.offer.photos[i];
-          fragmentPhoto.appendChild(newPhoto);
-        }
-        newElementCard.querySelector('.popup__photos').appendChild(fragmentPhoto);
-      }
-    } else {
-      newElementCard.querySelector('.popup__photos').remove();
-    }
+    var nodeForClone = newElementCard.querySelector('.popup__photos > .popup__photo');
+    var fragmentPhoto = createPhotos(arrayElement.offer.photos, nodeForClone);
+    nodeForClone.remove();
+    newElementCard.querySelector('.popup__photos').appendChild(fragmentPhoto);
+
     return newElementCard;
   };
 })();
